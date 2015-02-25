@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -51,9 +52,6 @@ namespace ZIDE.Views
             SetupEvents();
 
             CreateInterface();
-            UpdateInterface();
-
-            _mainController.StartApplication();
         }
 
         /// <summary>
@@ -171,6 +169,17 @@ namespace ZIDE.Views
         #endregion
 
         #region Event handlers
+
+        // 
+        // OnShown event handler
+        // 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            _mainController.StartApplication();
+            UpdateInterface();
+        }
 
         #region Main menu
 

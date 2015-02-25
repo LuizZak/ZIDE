@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\dev\Antlr\Antlr4.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +57,7 @@
     <Compile Include="Controllers\ScriptsController.cs" />
     <Compile Include="Models\ZScriptDocument.cs" />
     <Compile Include="Models\ZScriptProject.cs" />
+    <Compile Include="Services\RealtimeSyntaxCheckService.cs" />
     <Compile Include="Views\Controls\ProjectTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +137,10 @@
     <None Include="Resources\applications-development.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Engines\ZScript\ZScript\ZScript.csproj">
+      <Project>{5130543b-1447-48f2-96a5-c3fa0a018800}</Project>
+      <Name>ZScript</Name>
+    </ProjectReference>
     <ProjectReference Include="D:\dev\git\ICSharpCode.TextEditor\Project\ICSharpCode.TextEditor.csproj">
       <Project>{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}</Project>
       <Name>ICSharpCode.TextEditor</Name>

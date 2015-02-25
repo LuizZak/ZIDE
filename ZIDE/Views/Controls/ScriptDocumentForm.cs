@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+
+using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
+
 using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Models;
+using ZIDE.Services;
 
 namespace ZIDE.Views.Controls
 {
@@ -17,6 +21,14 @@ namespace ZIDE.Views.Controls
         /// The document associated with this scripts document form
         /// </summary>
         private readonly ZScriptDocument _document;
+
+        /// <summary>
+        /// Gets the text editor control for this script document form
+        /// </summary>
+        public TextEditorControl TextEditorControl
+        {
+            get { return te_textEditor; }
+        }
 
         /// <summary>
         /// Gets or sets a value specifying whether this form is currently being closed by either the user or code
@@ -50,6 +62,9 @@ namespace ZIDE.Views.Controls
             te_textEditor.Document.TextEditorProperties.ShowTabs = true;
 
             InitializeSyntaxHighlighting();
+
+            // Add the realtime syntax check service
+            var syntaxService = new RealtimeSyntaxCheckService(this);
         }
 
         /// <summary>
