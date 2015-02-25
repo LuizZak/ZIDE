@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!-- syntaxdefinition for ZScript by Luiz Fernando -->
+
+<SyntaxDefinition name ="ZScript" extensions = ".zhs">
+	
+	<Properties>
+		<Property name="LineComment" value="//"/>
+	</Properties>
+
+	<Digits name ="Digits" bold ="false" italic ="false" color ="DarkBlue"/>
+
+	<RuleSets>
+		<RuleSet ignorecase = "false">
+			<Delimiters>=!&gt;&lt;+-/*%&amp;|^~.}{,;][?:()</Delimiters>
+			
+			<Span name ="LineComment" bold ="false" italic ="false" color ="Gray" stopateol ="true">
+				<Begin>//</Begin>
+			</Span>
+					
+			<Span name ="BlockComment" bold ="false" italic ="false" color ="Gray" stopateol ="false">
+				<Begin>/*</Begin>
+				<End>*/</End>
+			</Span>
+			
+			<Span name ="DoubleQuoteString" bold ="false" italic ="false" color ="Green" stopateol ="false" escapecharacter="\">
+				<Begin>&quot;</Begin>
+				<End>&quot;</End>
+			</Span>
+	
+			<Span name = "SingleQuoteString" bold = "false" italic = "false" color = "Green" stopateol = "false" escapecharacter="\">
+				<Begin>&apos;</Begin>
+				<End>&apos;</End>
+			</Span>
+
+			<Span name = "Export" bold = "false" italic = "false" color = "DarkOliveGreen" stopateol = "true">
+				<Begin>@@</Begin>
+				<End>(</End>
+			</Span>
+	
+			<KeyWords name ="ZHSKeyWords" bold="false" italic = "false" color = "Blue">
+				<Key word =  "break" />
+				<Key word =  "case" />
+				<Key word =  "class" />
+				<Key word =  "const" />
+				<Key word =  "continue" />
+				<Key word =  "default" />
+				<Key word =  "delete" />
+				<Key word =  "else" />
+				<Key word =  "for" />
+				<Key word =  "func" />
+				<Key word =  "if" />
+				<Key word =  "in" />
+				<Key word =  "let" />
+				<Key word =  "new" />
+				<Key word =  "object" />
+				<Key word =  "override" />
+				<Key word =  "private" />
+				<Key word =  "return" />
+				<Key word =  "sequence" />
+				<Key word =  "super" />
+				<Key word =  "switch" />
+				<Key word =  "this" />
+				<Key word =  "typeof" />
+				<Key word =  "var" />
+				<Key word =  "while" />
+				<Key word =  "with" />
+			</KeyWords>
+	
+			<KeyWords name ="ZHSIntrinsics" bold="false" italic = "false" color = "Blue">
+				<Key word =  "any" />
+				<Key word =  "bool" />
+				<Key word =  "float" />
+				<Key word =  "int" />
+				<Key word =  "object" />
+				<Key word =  "string" />
+				<Key word =  "void" />
+			</KeyWords>
+			
+			<KeyWords name ="ZHSLiterals" bold="false" italic = "false" color = "Blue">
+				<Key word =  "false" />
+				<Key word =  "null" />
+				<Key word =  "true" />
+				<Key word =  "NaN" />
+				<Key word =  "Infinity" />
+				<Key word =  "NInfinity" />
+			</KeyWords>
+		</RuleSet>
+	</RuleSets>
+	
+</SyntaxDefinition>
