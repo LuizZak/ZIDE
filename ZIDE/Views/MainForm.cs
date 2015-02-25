@@ -51,7 +51,7 @@ namespace ZIDE.Views
             SetupEvents();
 
             CreateInterface();
-            UpdateView();
+            UpdateInterface();
 
             _mainController.StartApplication();
         }
@@ -91,7 +91,7 @@ namespace ZIDE.Views
         /// <summary>
         /// Updates the contents of all the views of the form
         /// </summary>
-        public void UpdateView()
+        public void UpdateInterface()
         {
             UpdateTitleBar();
         }
@@ -125,6 +125,8 @@ namespace ZIDE.Views
 
             // Hookup a closing event
             form.FormClosing += ScriptForm_OnFormClosing;
+            form.GotFocus += ScriptForm_GotFocus;
+            form.LostFocus += ScriptForm_LostFocus;
 
             _openedDocumentForms.Add(form);
         }
@@ -162,6 +164,8 @@ namespace ZIDE.Views
             form.Close();
 
             _openedDocumentForms.Remove(form);
+
+            UpdateInterface();
         }
 
         #endregion
@@ -229,6 +233,22 @@ namespace ZIDE.Views
             form.IsClosing = true;
 
             _mainController.CloseDocument(form.Document);
+        }
+
+        // 
+        // GotFocus
+        // 
+        void ScriptForm_GotFocus(object sender, EventArgs e)
+        {
+            UpdateInterface();
+        }
+
+        // 
+        // LostFocus
+        // 
+        void ScriptForm_LostFocus(object sender, EventArgs e)
+        {
+            UpdateInterface();
         }
 
         #endregion
