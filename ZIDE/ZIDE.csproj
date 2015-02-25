@@ -107,7 +107,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\system-file-manager.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\document-new.png" />
   </ItemGroup>
