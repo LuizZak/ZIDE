@@ -59,13 +59,14 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsb_newFile = new System.Windows.Forms.ToolStripButton();
             this.tsb_open = new System.Windows.Forms.ToolStripButton();
             this.tsb_save = new System.Windows.Forms.ToolStripButton();
             this.tsb_undo = new System.Windows.Forms.ToolStripButton();
             this.tsb_redo = new System.Windows.Forms.ToolStripButton();
             this.tsb_assemblyExplorer = new System.Windows.Forms.ToolStripButton();
-            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsb_analyzeSyntax = new System.Windows.Forms.ToolStripButton();
             this.tsm_projectWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -223,7 +224,8 @@
             this.tsb_undo,
             this.tsb_redo,
             this.toolStripSeparator2,
-            this.tsb_assemblyExplorer});
+            this.tsb_assemblyExplorer,
+            this.tsb_analyzeSyntax});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(986, 25);
@@ -239,6 +241,14 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // windowsToolStripMenuItem
+            // 
+            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsm_projectWindow});
+            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.windowsToolStripMenuItem.Text = "Windows";
             // 
             // tsb_newFile
             // 
@@ -295,19 +305,20 @@
             this.tsb_assemblyExplorer.Size = new System.Drawing.Size(23, 22);
             this.tsb_assemblyExplorer.Text = "Open Assembly Exporer";
             // 
-            // windowsToolStripMenuItem
+            // tsb_analyzeSyntax
             // 
-            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsm_projectWindow});
-            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
-            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.windowsToolStripMenuItem.Text = "Windows";
+            this.tsb_analyzeSyntax.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsb_analyzeSyntax.Image = global::ZIDE.Properties.Resources.dialog_information;
+            this.tsb_analyzeSyntax.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsb_analyzeSyntax.Name = "tsb_analyzeSyntax";
+            this.tsb_analyzeSyntax.Size = new System.Drawing.Size(23, 22);
+            this.tsb_analyzeSyntax.Text = "toolStripButton1";
             // 
             // tsm_projectWindow
             // 
             this.tsm_projectWindow.Image = global::ZIDE.Properties.Resources.system_file_manager;
             this.tsm_projectWindow.Name = "tsm_projectWindow";
-            this.tsm_projectWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsm_projectWindow.Size = new System.Drawing.Size(116, 22);
             this.tsm_projectWindow.Text = "Projects";
             this.tsm_projectWindow.Click += new System.EventHandler(this.tsm_projectWindow_Click);
             // 
@@ -359,5 +370,6 @@
         private System.Windows.Forms.ToolStripButton tsb_assemblyExplorer;
         private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tsm_projectWindow;
+        private System.Windows.Forms.ToolStripButton tsb_analyzeSyntax;
     }
 }
