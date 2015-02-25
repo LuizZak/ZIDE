@@ -15,7 +15,7 @@ namespace ZIDE.Controllers
         /// <summary>
         /// Number used during creation of new untitled documents to guarantee uniqueness
         /// </summary>
-        private int _untitledSufixNum = 1;
+        private int _untitledSufixNum;
 
         /// <summary>
         /// The main controller this scripts controller is binded to
@@ -150,6 +150,9 @@ namespace ZIDE.Controllers
         /// <returns>A unique name for an untitled document on this ScriptsController</returns>
         private string GetNameForUntitledDocument()
         {
+            // Always increment by one
+            _untitledSufixNum++;
+
             const string prefix = "Untitled ";
 
             // Iterate until no more collisions occur
