@@ -9,6 +9,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Models;
 using ZIDE.Services;
+using ZIDE.Services.Scripting;
 
 namespace ZIDE.Views.Controls
 {

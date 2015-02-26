@@ -57,7 +57,7 @@
     <Compile Include="Controllers\ScriptsController.cs" />
     <Compile Include="Models\ZScriptDocument.cs" />
     <Compile Include="Models\ZScriptProject.cs" />
-    <Compile Include="Services\RealtimeSyntaxCheckService.cs" />
+    <Compile Include="Services\Scripting\RealtimeSyntaxCheckService.cs" />
     <Compile Include="Views\Controls\ProjectTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,6 +148,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\dialog-information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\emblem-important.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process-stop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
