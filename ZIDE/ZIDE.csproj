@@ -58,6 +58,7 @@
     <Compile Include="Models\ZScriptDocument.cs" />
     <Compile Include="Models\ZScriptProject.cs" />
     <Compile Include="Services\Scripting\RealtimeSyntaxCheckService.cs" />
+    <Compile Include="Utils\TextEditorUtils.cs" />
     <Compile Include="Views\Controls\ProjectTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
