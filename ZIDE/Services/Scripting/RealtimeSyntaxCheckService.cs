@@ -2,10 +2,10 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using Antlr4.Runtime;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
-
+using ZIDE.Utils;
 using ZIDE.Views.Controls;
 
 using ZScript.CodeGeneration;
@@ -133,7 +133,6 @@ namespace ZIDE.Services.Scripting
             }
 
             AddMessageMarkers();
-            AddMessageIcons();
         }
 
         /// <summary>
@@ -146,6 +145,12 @@ namespace ZIDE.Services.Scripting
             {
                 var locationStart = new TextLocation(syntaxError.Column, syntaxError.Line - 1);
                 var locationEnd = new TextLocation(syntaxError.Column + 1, syntaxError.Line - 1);
+
+                if (syntaxError.Token != null)
+                {
+                    locationStart = new TextLocation(syntaxError.Token.Column, syntaxError.Token.Line - 1);
+                    locationEnd = new TextLocation(syntaxError.Token.Column + syntaxError.Token.Text.Length, syntaxError.Token.Line - 1);
+                }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
                 var offsetEnd = Document.PositionToOffset(locationEnd);
@@ -164,9 +169,11 @@ namespace ZIDE.Services.Scripting
                 var locationStart = new TextLocation(codeError.Column, codeError.Line - 1);
                 var locationEnd = new TextLocation(codeError.Column + 1, codeError.Line - 1);
 
-                if (codeError.Context != null)
+                var context = IdentifierContextForContext(codeError.Context);
+                if (context != null)
                 {
-                    locationEnd = new TextLocation(codeError.Context.Stop.Column, codeError.Context.Stop.Line - 1);
+                    locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
+                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
@@ -181,17 +188,19 @@ namespace ZIDE.Services.Scripting
             }
 
             // Add markers around warnings
-            foreach (var warnings in _messageContainer.Warnings)
+            foreach (var warning in _messageContainer.Warnings)
             {
                 Color color = Color.YellowGreen;
-                string message = warnings.Message;
+                string message = warning.Message;
 
-                var locationStart = new TextLocation(warnings.Column, warnings.Line - 1);
-                var locationEnd = new TextLocation(warnings.Column + 1, warnings.Line - 1);
+                var locationStart = new TextLocation(warning.Column, warning.Line - 1);
+                var locationEnd = new TextLocation(warning.Column + 1, warning.Line - 1);
 
-                if (warnings.Context != null)
+                var context = IdentifierContextForContext(warning.Context);
+                if (context != null)
                 {
-                    locationEnd = new TextLocation(warnings.Context.Stop.Column, warnings.Context.Stop.Line - 1);
+                    locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
+                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
@@ -207,11 +216,67 @@ namespace ZIDE.Services.Scripting
         }
 
         /// <summary>
-        /// Adds the message icons to the text
+        /// Returns a parse rule context that is the identifier of a given parse rule context object.
+        /// If no valid identifier parse rule contexts are found, the given context is returned instead.
+        /// Identifier contexts are found when the context is either a class, sequence, function, method, type field or type alias context
         /// </summary>
-        private void AddMessageIcons()
+        /// <param name="context">The context to get the identifier out of</param>
+        /// <returns>The identifier context for the context; or itself, if none could be found</returns>
+        static ParserRuleContext IdentifierContextForContext(ParserRuleContext context)
         {
-            
+            if (context == null)
+                return null;
+
+            // Function
+            var funcContext = context as ZScriptParser.FunctionDefinitionContext;
+            if (funcContext != null)
+            {
+                return funcContext.functionName();
+            }
+
+            // Class
+            var classContext = context as ZScriptParser.ClassDefinitionContext;
+            if (classContext != null)
+            {
+                return classContext.className();
+            }
+
+            // Sequence
+            var sequenceContext = context as ZScriptParser.SequenceBlockContext;
+            if (sequenceContext != null)
+            {
+                return sequenceContext.sequenceName();
+            }
+
+            // Method
+            var methodContext = context as ZScriptParser.ClassMethodContext;
+            if (methodContext != null)
+            {
+                return methodContext.functionDefinition().functionName();
+            }
+
+            // Type alias
+            var typeAlias = context as ZScriptParser.TypeAliasContext;
+            if (typeAlias != null)
+            {
+                return typeAlias.typeAliasName();
+            }
+
+            // Value holder definition
+            var valueHolder = context as ZScriptParser.ValueHolderDeclContext;
+            if (valueHolder != null)
+            {
+                return valueHolder.valueHolderName();
+            }
+
+            // Type field
+            var typeField = context as ZScriptParser.TypeAliasVariableContext;
+            if (typeField != null)
+            {
+                return typeField.valueDeclareStatement().valueHolderDecl().valueHolderName();
+            }
+
+            return context;
         }
 
         /// <summary>
@@ -346,6 +411,69 @@ namespace ZIDE.Services.Scripting
                         if (target.Contains(mousepos))
                         {
                             _toolTip.Show(message.Message, TextArea, new Point(0, yPos + lineHeight), 500);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 
+            // AbstractMargin.HandleMouseDown override
+            // 
+            public override void HandleMouseDown(Point mousepos, MouseButtons mouseButtons)
+            {
+                // Check if the mouse is over any error/message
+                if (MessageContainer == null)
+                    return;
+
+                foreach (var message in MessageContainer.AllMessages)
+                {
+                    int lineNumber = textArea.Document.GetVisibleLine(message.Line - 1);
+                    int lineHeight = textArea.TextView.FontHeight;
+                    int yPos = (lineNumber * lineHeight) - textArea.VirtualTop.Y;
+                    if (IsLineInsideRegion(yPos, yPos + lineHeight, 0, TextArea.Size.Height))
+                    {
+                        if (lineNumber == textArea.Document.GetVisibleLine(message.Line - 2))
+                        {
+                            // marker is inside folded region, do not draw it
+                            continue;
+                        }
+
+                        Rectangle target = new Rectangle(2, yPos, 16, 16);
+
+                        var context = IdentifierContextForContext(message.Context);
+
+                        if (target.Contains(mousepos))
+                        {
+                            if (context != null)
+                            {
+                                var locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
+                                var locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
+
+                                var startOffset = TextArea.Document.PositionToOffset(locationStart);
+                                var endOffset = TextArea.Document.PositionToOffset(locationEnd);
+
+                                TextArea.MotherTextEditorControl.Select(startOffset, endOffset - startOffset);
+                            }
+                            else if (message.Token != null)
+                            {
+                                var locationStart = new TextLocation(message.Token.Column, message.Token.Line - 1);
+                                var locationEnd = new TextLocation(message.Token.Column + message.Token.Text.Length, message.Token.Line - 1);
+
+                                var startOffset = TextArea.Document.PositionToOffset(locationStart);
+                                var endOffset = TextArea.Document.PositionToOffset(locationEnd);
+
+                                TextArea.MotherTextEditorControl.Select(startOffset, endOffset - startOffset);
+                            }
+                            else
+                            {
+                                var locationStart = new TextLocation(message.Column, message.Line - 1);
+
+                                var startOffset = TextArea.Document.PositionToOffset(locationStart);
+
+                                TextArea.MotherTextEditorControl.Select(startOffset, 0);
+                            }
+
                             break;
                         }
                     }
