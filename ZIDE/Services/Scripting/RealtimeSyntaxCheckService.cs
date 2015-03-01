@@ -140,24 +140,28 @@ namespace ZIDE.Services.Scripting
         /// </summary>
         private void AddMessageMarkers()
         {
-            // Add markers around syntax errors
-            foreach (var syntaxError in _messageContainer.SyntaxErrors)
+            // Add markers around warnings
+            foreach (var warning in _messageContainer.Warnings)
             {
-                var locationStart = new TextLocation(syntaxError.Column, syntaxError.Line - 1);
-                var locationEnd = new TextLocation(syntaxError.Column + 1, syntaxError.Line - 1);
+                Color color = Color.YellowGreen;
+                string message = warning.Message;
 
-                if (syntaxError.Token != null)
+                var locationStart = new TextLocation(warning.Column, warning.Line - 1);
+                var locationEnd = new TextLocation(warning.Column + 1, warning.Line - 1);
+
+                var context = IdentifierContextForContext(warning.Context);
+                if (context != null)
                 {
-                    locationStart = new TextLocation(syntaxError.Token.Column, syntaxError.Token.Line - 1);
-                    locationEnd = new TextLocation(syntaxError.Token.Column + syntaxError.Token.Text.Length, syntaxError.Token.Line - 1);
+                    locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
+                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
                 var offsetEnd = Document.PositionToOffset(locationEnd);
 
-                var marker = new TextMarker(offsetStart, offsetEnd - offsetStart, TextMarkerType.WaveLine)
+                var marker = new TextMarker(offsetStart, offsetEnd - offsetStart, TextMarkerType.WaveLine, color)
                 {
-                    ToolTip = syntaxError.Message
+                    ToolTip = message
                 };
 
                 Document.MarkerStrategy.AddMarker(marker);
@@ -187,28 +191,24 @@ namespace ZIDE.Services.Scripting
                 Document.MarkerStrategy.AddMarker(marker);
             }
 
-            // Add markers around warnings
-            foreach (var warning in _messageContainer.Warnings)
+            // Add markers around syntax errors
+            foreach (var syntaxError in _messageContainer.SyntaxErrors)
             {
-                Color color = Color.YellowGreen;
-                string message = warning.Message;
+                var locationStart = new TextLocation(syntaxError.Column, syntaxError.Line - 1);
+                var locationEnd = new TextLocation(syntaxError.Column + 1, syntaxError.Line - 1);
 
-                var locationStart = new TextLocation(warning.Column, warning.Line - 1);
-                var locationEnd = new TextLocation(warning.Column + 1, warning.Line - 1);
-
-                var context = IdentifierContextForContext(warning.Context);
-                if (context != null)
+                if (syntaxError.Token != null)
                 {
-                    locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
-                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
+                    locationStart = new TextLocation(syntaxError.Token.Column, syntaxError.Token.Line - 1);
+                    locationEnd = new TextLocation(syntaxError.Token.Column + syntaxError.Token.Text.Length, syntaxError.Token.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
                 var offsetEnd = Document.PositionToOffset(locationEnd);
 
-                var marker = new TextMarker(offsetStart, offsetEnd - offsetStart, TextMarkerType.WaveLine, color)
+                var marker = new TextMarker(offsetStart, offsetEnd - offsetStart, TextMarkerType.WaveLine)
                 {
-                    ToolTip = message
+                    ToolTip = syntaxError.Message
                 };
 
                 Document.MarkerStrategy.AddMarker(marker);
@@ -393,7 +393,7 @@ namespace ZIDE.Services.Scripting
 
                 Point mousepos = TextArea.PointToClient(Control.MousePosition);
 
-                foreach (var message in MessageContainer.AllMessages)
+                foreach (var message in MessageContainer.AllMessages.Reverse())
                 {
                     int lineNumber = textArea.Document.GetVisibleLine(message.Line - 1);
                     int lineHeight = textArea.TextView.FontHeight;
