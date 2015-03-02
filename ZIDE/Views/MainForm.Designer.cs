@@ -43,6 +43,7 @@
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.vS2012LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2012LightTheme();
             this.dp_mainPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -55,20 +56,20 @@
             this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_projectWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_testBed = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_about = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsb_newFile = new System.Windows.Forms.ToolStripButton();
             this.tsb_open = new System.Windows.Forms.ToolStripButton();
             this.tsb_save = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsb_undo = new System.Windows.Forms.ToolStripButton();
             this.tsb_redo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsb_assemblyExplorer = new System.Windows.Forms.ToolStripButton();
             this.tsb_analyzeSyntax = new System.Windows.Forms.ToolStripButton();
-            this.tsm_projectWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsm_testBed = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -210,6 +211,22 @@
             this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.windowsToolStripMenuItem.Text = "Windows";
             // 
+            // tsm_projectWindow
+            // 
+            this.tsm_projectWindow.Image = global::ZIDE.Properties.Resources.system_file_manager;
+            this.tsm_projectWindow.Name = "tsm_projectWindow";
+            this.tsm_projectWindow.Size = new System.Drawing.Size(116, 22);
+            this.tsm_projectWindow.Text = "Projects";
+            this.tsm_projectWindow.Click += new System.EventHandler(this.tsm_projectWindow_Click);
+            // 
+            // tsm_testBed
+            // 
+            this.tsm_testBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
+            this.tsm_testBed.Name = "tsm_testBed";
+            this.tsm_testBed.Size = new System.Drawing.Size(116, 22);
+            this.tsm_testBed.Text = "Testbed";
+            this.tsm_testBed.Click += new System.EventHandler(this.tsm_testBed_Click);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -242,16 +259,6 @@
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
             // tsb_newFile
             // 
             this.tsb_newFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -280,6 +287,11 @@
             this.tsb_save.Size = new System.Drawing.Size(23, 22);
             this.tsb_save.Text = "Save...";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // tsb_undo
             // 
             this.tsb_undo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -297,6 +309,11 @@
             this.tsb_redo.Name = "tsb_redo";
             this.tsb_redo.Size = new System.Drawing.Size(23, 22);
             this.tsb_redo.Text = "Redo";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // tsb_assemblyExplorer
             // 
@@ -316,22 +333,6 @@
             this.tsb_analyzeSyntax.Size = new System.Drawing.Size(23, 22);
             this.tsb_analyzeSyntax.Text = "toolStripButton1";
             // 
-            // tsm_projectWindow
-            // 
-            this.tsm_projectWindow.Image = global::ZIDE.Properties.Resources.system_file_manager;
-            this.tsm_projectWindow.Name = "tsm_projectWindow";
-            this.tsm_projectWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsm_projectWindow.Text = "Projects";
-            this.tsm_projectWindow.Click += new System.EventHandler(this.tsm_projectWindow_Click);
-            // 
-            // tsm_testBed
-            // 
-            this.tsm_testBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
-            this.tsm_testBed.Name = "tsm_testBed";
-            this.tsm_testBed.Size = new System.Drawing.Size(152, 22);
-            this.tsm_testBed.Text = "Testbed";
-            this.tsm_testBed.Click += new System.EventHandler(this.tsm_testBed_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -340,6 +341,7 @@
             this.Controls.Add(this.dp_mainPanel);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";

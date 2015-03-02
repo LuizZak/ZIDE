@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-
+﻿using System;
 using ICSharpCode.TextEditor;
-using ICSharpCode.TextEditor.Document;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -15,8 +11,13 @@ namespace ZIDE.Views.Controls
     /// <summary>
     /// Represents a script document container
     /// </summary>
-    public sealed partial class ScriptDocumentForm : DockContent, IScriptForm
+    public partial class ScriptDocumentForm : DockContent, IScriptForm
     {
+        /// <summary>
+        /// The syntax service used by this script document form to provide syntax support
+        /// </summary>
+        protected RealtimeSyntaxCheckService syntaxService;
+
         /// <summary>
         /// The document associated with this scripts document form
         /// </summary>
@@ -53,11 +54,29 @@ namespace ZIDE.Views.Controls
 
             _document = document;
 
-            Text = document.DocumentName;
             te_textEditor.Text = Document.Contents;
 
             // Add the realtime syntax check service
-            var syntaxService = new RealtimeSyntaxCheckService(this);
+            syntaxService = new RealtimeSyntaxCheckService(this);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ScriptDocumentForm class
+        /// </summary>
+        public ScriptDocumentForm()
+            : this(new ZScriptDocument("Untitled document"))
+        {
+
+        }
+
+        // 
+        // Form.OnShown override
+        // 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            Text = _document.DocumentName;
         }
     }
 }

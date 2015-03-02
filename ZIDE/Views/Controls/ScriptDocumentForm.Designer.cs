@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ZIDE.Views.Controls
 {
-    public sealed partial class ScriptDocumentForm
+    public partial class ScriptDocumentForm
     {
-        private ICSharpCode.TextEditor.TextEditorControl te_textEditor;
 
         private void InitializeComponent()
         {
@@ -33,5 +32,7 @@ namespace ZIDE.Views.Controls
             this.ResumeLayout(false);
 
         }
+
+        protected ICSharpCode.TextEditor.TextEditorControl te_textEditor;
     }
 }

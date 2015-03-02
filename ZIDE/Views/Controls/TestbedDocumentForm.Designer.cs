@@ -38,7 +38,6 @@
             this.tsb_execute = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
-            this.te_textEditor = new ICSharpCode.TextEditor.TextEditorControl();
             this.te_output = new ICSharpCode.TextEditor.TextEditorControl();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -187,7 +186,6 @@
 
         #endregion
 
-        private ICSharpCode.TextEditor.TextEditorControl te_textEditor;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox tscb_startingFunction;

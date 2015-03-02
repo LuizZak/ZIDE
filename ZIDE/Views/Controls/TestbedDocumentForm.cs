@@ -2,10 +2,11 @@
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
-using WeifenLuo.WinFormsUI.Docking;
 
+using ZIDE.Models;
 using ZIDE.Services.Scripting;
 using ZIDE.Utils;
+
 using ZScript.CodeGeneration;
 using ZScript.CodeGeneration.Analysis;
 using ZScript.CodeGeneration.Definitions;
@@ -17,13 +18,8 @@ namespace ZIDE.Views.Controls
     /// <summary>
     /// Represents a form which enables the user to write and execute scripts
     /// </summary>
-    public partial class TestbedDocumentForm : DockContent, IScriptForm
+    public partial class TestbedDocumentForm : ScriptDocumentForm
     {
-        /// <summary>
-        /// The realtime syntax check service used to parse the code typed into this form
-        /// </summary>
-        private readonly RealtimeSyntaxCheckService _syntaxService;
-
         /// <summary>
         /// The currently selected function definition
         /// </summary>
@@ -45,14 +41,6 @@ namespace ZIDE.Views.Controls
         private bool _firstParse = true;
 
         /// <summary>
-        /// Gets the text editor control for this form
-        /// </summary>
-        public TextEditorControl TextEditorControl
-        {
-            get { return te_textEditor; }
-        }
-
-        /// <summary>
         /// Gets or sets the currently selected function definition
         /// </summary>
         public FunctionDefinition SelectedFunction
@@ -68,7 +56,9 @@ namespace ZIDE.Views.Controls
         /// <summary>
         /// Initializes a new instance of the TestbedDocumentForm class
         /// </summary>
-        public TestbedDocumentForm()
+        /// <param name="document">The document to display the form with</param>
+        public TestbedDocumentForm(ZScriptDocument document)
+            : base(document)
         {
             InitializeComponent();
 
@@ -78,8 +68,16 @@ namespace ZIDE.Views.Controls
             }
 
             // Add the realtime syntax check service
-            _syntaxService = new RealtimeSyntaxCheckService(this);
-            _syntaxService.ScriptParsed += SyntaxService_OnScriptParsed;
+            syntaxService.ScriptParsed += SyntaxService_OnScriptParsed;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the TestbedDocumentForm class
+        /// </summary>
+        public TestbedDocumentForm()
+            : this(new ZScriptDocument("Untitled Testbed"))
+        {
+
         }
 
         // 
@@ -94,7 +92,7 @@ namespace ZIDE.Views.Controls
             }
 
             // Parse the script
-            _syntaxService.Parse();
+            syntaxService.Parse();
 
             te_textEditor.Select(te_textEditor.Text.Length - 2, 0);
             te_textEditor.VerticalScroll.Value = 0;

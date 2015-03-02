@@ -142,7 +142,7 @@ namespace ZIDE.Services.Scripting
         {
             _parseTimer.Stop();
 
-            _backgroundWorker.RunWorkerAsync();
+            StartScriptParse();
         }
 
         // 
@@ -150,7 +150,7 @@ namespace ZIDE.Services.Scripting
         // 
         private void BackgroundWorker_OnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            AnalyzeSyntax();
+            RefreshScript();
         }
 
         // 
@@ -158,15 +158,18 @@ namespace ZIDE.Services.Scripting
         // 
         private void BackgroundWorker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
-            if (ScriptParsed != null)
+            lock (Document)
             {
-                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
+                if (ScriptParsed != null)
+                {
+                    ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
+                }
+
+                _messageContainer = _runtimeGenerator.MessageContainer;
+                _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
+
+                UpdateDisplay();
             }
-
-            _messageContainer = _runtimeGenerator.MessageContainer;
-            _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
-
-            UpdateDisplay();
         }
 
         /// <summary>
@@ -174,6 +177,21 @@ namespace ZIDE.Services.Scripting
         /// </summary>
         public void Parse()
         {
+            StartScriptParse();
+        }
+
+        /// <summary>
+        /// Starts the script parsing, preparing the runtime generator and starting the parsing background worker
+        /// </summary>
+        void StartScriptParse()
+        {
+            // Quit if an operation is already in process on the background worker
+            if (_backgroundWorker.IsBusy)
+                return;
+
+            // Parse the script
+            _runtimeGenerator = new ZRuntimeGenerator(Document.TextContent);
+
             _backgroundWorker.RunWorkerAsync();
         }
 
@@ -182,8 +200,6 @@ namespace ZIDE.Services.Scripting
         /// </summary>
         void RefreshScript()
         {
-            // Parse the script
-            _runtimeGenerator = new ZRuntimeGenerator(Document.TextContent);
             _runtimeGenerator.ParseSources();
 
             if (!_runtimeGenerator.MessageContainer.HasSyntaxErrors)
@@ -413,15 +429,6 @@ namespace ZIDE.Services.Scripting
 
                 Document.MarkerStrategy.AddMarker(marker);
             }
-        }
-
-        /// <summary>
-        /// Analyzes the syntax on the form's document
-        /// </summary>
-        private void AnalyzeSyntax()
-        {
-            RefreshScript();
-            UpdateDisplay();
         }
 
         // 
