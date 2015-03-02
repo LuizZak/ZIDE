@@ -28,26 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.te_textEditor = new ICSharpCode.TextEditor.TextEditorControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.tscb_startingFunction = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.tsb_execute = new System.Windows.Forms.ToolStripButton();
-            this.tstb_arguments = new System.Windows.Forms.ToolStripTextBox();
+            this.tscb_startingFunction = new System.Windows.Forms.ToolStripComboBox();
             this.tsl_arguments = new System.Windows.Forms.ToolStripLabel();
             this.tsl_leftParam = new System.Windows.Forms.ToolStripLabel();
+            this.tstb_arguments = new System.Windows.Forms.ToolStripTextBox();
             this.tsl_rightParam = new System.Windows.Forms.ToolStripLabel();
+            this.tsb_execute = new System.Windows.Forms.ToolStripButton();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label1 = new System.Windows.Forms.Label();
+            this.te_textEditor = new ICSharpCode.TextEditor.TextEditorControl();
+            this.te_output = new ICSharpCode.TextEditor.TextEditorControl();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // te_textEditor
-            // 
-            this.te_textEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.te_textEditor.IsReadOnly = false;
-            this.te_textEditor.Location = new System.Drawing.Point(0, 25);
-            this.te_textEditor.Name = "te_textEditor";
-            this.te_textEditor.Size = new System.Drawing.Size(799, 495);
-            this.te_textEditor.TabIndex = 0;
             // 
             // toolStrip1
             // 
@@ -65,32 +63,17 @@
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // tscb_startingFunction
-            // 
-            this.tscb_startingFunction.Name = "tscb_startingFunction";
-            this.tscb_startingFunction.Size = new System.Drawing.Size(121, 25);
-            this.tscb_startingFunction.SelectedIndexChanged += new System.EventHandler(this.tscb_startingFunction_SelectedIndexChanged);
-            // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(99, 22);
             this.toolStripLabel1.Text = "Starting function:";
             // 
-            // tsb_execute
+            // tscb_startingFunction
             // 
-            this.tsb_execute.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsb_execute.Image = global::ZIDE.Properties.Resources.go_next;
-            this.tsb_execute.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsb_execute.Name = "tsb_execute";
-            this.tsb_execute.Size = new System.Drawing.Size(23, 22);
-            this.tsb_execute.Text = "Execute";
-            this.tsb_execute.ToolTipText = "Execute";
-            // 
-            // tstb_arguments
-            // 
-            this.tstb_arguments.Name = "tstb_arguments";
-            this.tstb_arguments.Size = new System.Drawing.Size(100, 25);
+            this.tscb_startingFunction.Name = "tscb_startingFunction";
+            this.tscb_startingFunction.Size = new System.Drawing.Size(121, 25);
+            this.tscb_startingFunction.SelectedIndexChanged += new System.EventHandler(this.tscb_startingFunction_SelectedIndexChanged);
             // 
             // tsl_arguments
             // 
@@ -104,24 +87,99 @@
             this.tsl_leftParam.Size = new System.Drawing.Size(11, 22);
             this.tsl_leftParam.Text = "(";
             // 
+            // tstb_arguments
+            // 
+            this.tstb_arguments.Name = "tstb_arguments";
+            this.tstb_arguments.Size = new System.Drawing.Size(100, 25);
+            // 
             // tsl_rightParam
             // 
             this.tsl_rightParam.Name = "tsl_rightParam";
             this.tsl_rightParam.Size = new System.Drawing.Size(11, 22);
             this.tsl_rightParam.Text = ")";
             // 
+            // tsb_execute
+            // 
+            this.tsb_execute.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsb_execute.Image = global::ZIDE.Properties.Resources.go_next;
+            this.tsb_execute.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsb_execute.Name = "tsb_execute";
+            this.tsb_execute.Size = new System.Drawing.Size(23, 22);
+            this.tsb_execute.Text = "Execute";
+            this.tsb_execute.ToolTipText = "Execute";
+            this.tsb_execute.Click += new System.EventHandler(this.tsb_execute_Click);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.te_textEditor);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.label1);
+            this.splitContainer1.Panel2.Controls.Add(this.te_output);
+            this.splitContainer1.Size = new System.Drawing.Size(799, 495);
+            this.splitContainer1.SplitterDistance = 273;
+            this.splitContainer1.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Output:";
+            // 
+            // te_textEditor
+            // 
+            this.te_textEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.te_textEditor.IsReadOnly = false;
+            this.te_textEditor.Location = new System.Drawing.Point(0, 0);
+            this.te_textEditor.Name = "te_textEditor";
+            this.te_textEditor.Size = new System.Drawing.Size(799, 273);
+            this.te_textEditor.TabIndex = 0;
+            this.te_textEditor.Text = "@print(v...)\r\n\r\nfunc main()\r\n{\r\n    // Main entry point\r\n    \r\n}";
+            // 
+            // te_output
+            // 
+            this.te_output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.te_output.BackColor = System.Drawing.SystemColors.Info;
+            this.te_output.IsReadOnly = false;
+            this.te_output.Location = new System.Drawing.Point(0, 19);
+            this.te_output.Name = "te_output";
+            this.te_output.ShowLineNumbers = false;
+            this.te_output.ShowMatchingBracket = false;
+            this.te_output.ShowVRuler = false;
+            this.te_output.Size = new System.Drawing.Size(799, 199);
+            this.te_output.TabIndex = 2;
+            // 
             // TestbedDocumentForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(799, 520);
-            this.Controls.Add(this.te_textEditor);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "TestbedDocumentForm";
             this.Text = "Testbed";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,5 +196,8 @@
         private System.Windows.Forms.ToolStripTextBox tstb_arguments;
         private System.Windows.Forms.ToolStripLabel tsl_leftParam;
         private System.Windows.Forms.ToolStripLabel tsl_rightParam;
+        private ICSharpCode.TextEditor.TextEditorControl te_output;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Label label1;
     }
 }

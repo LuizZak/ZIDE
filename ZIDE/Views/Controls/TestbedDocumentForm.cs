@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Windows.Forms;
-
 using ICSharpCode.TextEditor;
-
+using ICSharpCode.TextEditor.Document;
 using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Services.Scripting;
-
+using ZIDE.Utils;
+using ZScript.CodeGeneration;
 using ZScript.CodeGeneration.Analysis;
 using ZScript.CodeGeneration.Definitions;
+using ZScript.Elements;
+using ZScript.Runtime;
 
 namespace ZIDE.Views.Controls
 {
@@ -26,6 +28,16 @@ namespace ZIDE.Views.Controls
         /// The currently selected function definition
         /// </summary>
         private FunctionDefinition _selectedFunction;
+
+        /// <summary>
+        /// The current runtime generator instance
+        /// </summary>
+        private ZRuntimeGenerator _runtimeGenerator;
+
+        /// <summary>
+        /// The current scope collected with the runtime generator
+        /// </summary>
+        private CodeScope _currentScope;
 
         /// <summary>
         /// Gets the text editor control for this form
@@ -63,9 +75,32 @@ namespace ZIDE.Views.Controls
             // Add the realtime syntax check service
             _syntaxService = new RealtimeSyntaxCheckService(this);
             _syntaxService.ScriptParsed += SyntaxService_OnScriptParsed;
+        }
 
-            // Start with an unselected function
-            SelectFunction(null);
+        // 
+        // OnShown override
+        // 
+        protected override void OnShown(EventArgs e)
+        {
+            var highlightStrategy = te_output.Document.HighlightingStrategy as DefaultHighlightingStrategy;
+            if (highlightStrategy != null)
+            {
+                highlightStrategy.SetColorFor("Default", new HighlightBackground("WindowText", "Info", false, false));
+            }
+
+            // Parse the script
+            _syntaxService.Parse();
+
+            te_textEditor.Select(te_textEditor.Text.Length - 2, 0);
+            te_textEditor.VerticalScroll.Value = 0;
+            te_textEditor.ActiveTextAreaControl.VerticalScroll.Value = 0;
+            te_textEditor.ActiveTextAreaControl.VScrollBar.Value = 0;
+
+            if (_currentScope != null)
+            {
+                // Start with the default 'main' function
+                SelectFunction(_currentScope.GetDefinitionByName<FunctionDefinition>("main"));
+            }
         }
 
         /// <summary>
@@ -74,6 +109,8 @@ namespace ZIDE.Views.Controls
         /// <param name="codeScope">The code scope to update the form with. Providing null will clear the contents of the form</param>
         public void UpdateWithScope(CodeScope codeScope)
         {
+            _currentScope = codeScope;
+
             if (codeScope == null)
             {
                 DisableFunctionControls();
@@ -125,6 +162,21 @@ namespace ZIDE.Views.Controls
         private void SelectFunction(FunctionDefinition definition)
         {
             SelectedFunction = definition;
+            tscb_startingFunction.SelectedItem = definition;
+        }
+
+        /// <summary>
+        /// Executes the function selected
+        /// </summary>
+        private void Execute()
+        {
+            if (SelectedFunction == null || _runtimeGenerator == null || _runtimeGenerator.MessageContainer.HasErrors)
+                return;
+
+            var runner = new FunctionRunner(_runtimeGenerator, SelectedFunction);
+            runner.Execute(tstb_arguments.Text);
+
+            te_output.Text = runner.Output;
         }
 
         #region Interface-related methods
@@ -180,6 +232,7 @@ namespace ZIDE.Views.Controls
         private void SyntaxService_OnScriptParsed(object sender, ScriptParsedEventArgs eventArgs)
         {
             UpdateWithScope(eventArgs.BaseScope);
+            _runtimeGenerator = eventArgs.RuntimeGenerator;
         }
 
         // 
@@ -190,6 +243,116 @@ namespace ZIDE.Views.Controls
             SelectFunction(tscb_startingFunction.SelectedItem as FunctionDefinition);
         }
 
+        // 
+        // Execute toolstrip button click
+        // 
+        private void tsb_execute_Click(object sender, EventArgs e)
+        {
+            Execute();
+        }
+
         #endregion
+
+        /// <summary>
+        /// Class capable of running functions with a set of provided function arguments
+        /// </summary>
+        class FunctionRunner : IRuntimeOwner
+        {
+            /// <summary>
+            /// The runtime generator containing the code scope and function to run
+            /// </summary>
+            private readonly ZRuntimeGenerator _runtimeGenerator;
+
+            /// <summary>
+            /// The function definition to execute
+            /// </summary>
+            private readonly FunctionDefinition _functionDefinition;
+
+            /// <summary>
+            /// Whether the function execution was successful
+            /// </summary>
+            private bool _successful;
+
+            /// <summary>
+            /// Gets a value specifying whether the function execution was successful
+            /// </summary>
+            public bool Successful
+            {
+                get { return _successful; }
+            }
+
+            /// <summary>
+            /// Gets the output of the function execution
+            /// </summary>
+            public string Output { get; private set; }
+
+            /// <summary>
+            /// Initializes a new instance of the FunctionRunner clas
+            /// </summary>
+            /// <param name="runtimeGenerator">The runtime generator to generate the runtime and execute the function on</param>
+            /// <param name="functionDefinition">The function definition to execute</param>
+            public FunctionRunner(ZRuntimeGenerator runtimeGenerator, FunctionDefinition functionDefinition)
+            {
+                _functionDefinition = functionDefinition;
+                _runtimeGenerator = runtimeGenerator;
+            }
+
+            /// <summary>
+            /// Executes the function, using a given string as an argument list
+            /// </summary>
+            /// <param name="arguments">The arguments to use when executing the function</param>
+            public void Execute(string arguments)
+            {
+                try
+                {
+                    var runtime = _runtimeGenerator.GenerateRuntime(this);
+
+                    var ret = runtime.CallFunction(_functionDefinition.Name);
+
+                    if(!string.IsNullOrEmpty(Output))
+                        Output += "\r\n";
+
+                    Output += ret;
+
+                    _successful = true;
+                }
+                catch (Exception e)
+                {
+                    _successful = false;
+
+                    Output = e.ToString();
+
+                    throw;
+                }
+            }
+
+            // 
+            // IRuntimeOwner.CallFunction implementation
+            // 
+            public object CallFunction(ZExportFunction func, params object[] parameters)
+            {
+                if (func.Name == "print")
+                {
+                    foreach (var p in parameters)
+                    {
+                        Output += p + " ";
+                    }
+
+                    Output += "\r\n";
+
+                    return parameters;
+                }
+
+                return null;
+            }
+
+            // 
+            // IRuntimeOwner.CreateType implementation
+            // 
+            public object CreateType(string typeName, params object[] parameters)
+            {
+                throw new InvalidOperationException("Cannot create types in Testbed scripts");
+            }
+        }
     }
 }

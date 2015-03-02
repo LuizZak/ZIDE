@@ -5,9 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+
 using Antlr4.Runtime;
+
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
+
 using ZIDE.Utils;
 using ZIDE.Views.Controls;
 
@@ -29,11 +32,24 @@ namespace ZIDE.Services.Scripting
         private readonly IScriptForm _form;
 
         /// <summary>
+        /// The runtime generator for the realtime syntax check service
+        /// </summary>
+        private ZRuntimeGenerator _runtimeGenerator;
+
+        /// <summary>
         /// Gets the document associated with this realtime syntax check service
         /// </summary>
         private IDocument Document
         {
             get { return _form.TextEditorControl.Document; }
+        }
+
+        /// <summary>
+        /// Gets the runtime generator for the realtime syntax check service
+        /// </summary>
+        public ZRuntimeGenerator RuntimeGenerator
+        {
+            get { return _runtimeGenerator; }
         }
 
         /// <summary>
@@ -121,18 +137,27 @@ namespace ZIDE.Services.Scripting
         }
 
         /// <summary>
+        /// Parses the script
+        /// </summary>
+        public void Parse()
+        {
+            RefreshScript();
+            UpdateDisplay();
+        }
+
+        /// <summary>
         /// Refreshes the script currently opened
         /// </summary>
         void RefreshScript()
         {
             // Parse the script
-            var generator = new ZRuntimeGenerator(Document.TextContent);
-            generator.ParseSources();
+            _runtimeGenerator = new ZRuntimeGenerator(Document.TextContent);
+            _runtimeGenerator.ParseSources();
 
-            if(!generator.MessageContainer.HasSyntaxErrors)
+            if (!_runtimeGenerator.MessageContainer.HasSyntaxErrors)
             {
                 // TODO: See how to deal with multiple scopes coming from multiple sources merged into one
-                _codeScope = generator.CollectDefinitions();
+                _codeScope = _runtimeGenerator.CollectDefinitions();
                 //_codeScope = generator.SourceProvider.Sources[0].Definitions.CollectedBaseScope;
             }
             else
@@ -142,11 +167,11 @@ namespace ZIDE.Services.Scripting
 
             if (ScriptParsed != null)
             {
-                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope));
+                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
             }
 
-            _messageContainer = generator.MessageContainer;
-            _messagesMargin.MessageContainer = generator.MessageContainer;
+            _messageContainer = _runtimeGenerator.MessageContainer;
+            _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
         }
 
         /// <summary>
@@ -645,20 +670,28 @@ namespace ZIDE.Services.Scripting
         public bool Succeeded { get; private set; }
 
         /// <summary>
+        /// Gets the code scope that was parsed.
         /// When the script parse is successful, this value describes the collected base scope for the script.
         /// This value is null, if the parsing was unsuccessful
         /// </summary>
         public CodeScope BaseScope { get; private set; }
 
         /// <summary>
+        /// Gets the runtime generator that was used to parse the code scope
+        /// </summary>
+        public ZRuntimeGenerator RuntimeGenerator { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the ScriptParsedEventArgs class
         /// </summary>
         /// <param name="succeeded">Whether the script parsing was successfull</param>
         /// <param name="baseScope">The base scope for the script parsed</param>
-        public ScriptParsedEventArgs(bool succeeded, CodeScope baseScope)
+        /// <param name="runtimeGenerator">The runtime generator that was usd to parse the code scope</param>
+        public ScriptParsedEventArgs(bool succeeded, CodeScope baseScope, ZRuntimeGenerator runtimeGenerator)
         {
             Succeeded = succeeded;
             BaseScope = baseScope;
+            RuntimeGenerator = runtimeGenerator;
         }
     }
 }
