@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -73,6 +74,11 @@ namespace ZIDE.Services.Scripting
         private readonly Timer _parseTimer;
 
         /// <summary>
+        /// The background worker used to parse the script
+        /// </summary>
+        private readonly BackgroundWorker _backgroundWorker;
+
+        /// <summary>
         /// Default interval before the parse timer performs the script parsing
         /// </summary>
         private const int ParseInterval = 100;
@@ -103,8 +109,11 @@ namespace ZIDE.Services.Scripting
             _messageContainer = new MessageContainer();
 
             _parseTimer = new Timer { Interval = ParseInterval };
-
             _parseTimer.Tick += ParseTimer_OnTick;
+
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.DoWork += BackgroundWorker_OnDoWork;
+            _backgroundWorker.RunWorkerCompleted += BackgroundWorker_OnRunWorkerCompleted;
 
             _messagesMargin = new MessagesMargin(_form.TextEditorControl.ActiveTextAreaControl.TextArea);
             _form.TextEditorControl.ActiveTextAreaControl.TextArea.InsertLeftMargin(0, _messagesMargin);
@@ -133,7 +142,31 @@ namespace ZIDE.Services.Scripting
         {
             _parseTimer.Stop();
 
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        // 
+        // BackgroundWorker's DoWork event
+        // 
+        private void BackgroundWorker_OnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
             AnalyzeSyntax();
+        }
+
+        // 
+        // BackgroundWorker's RunWorkerCompleted event
+        // 
+        private void BackgroundWorker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
+            if (ScriptParsed != null)
+            {
+                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
+            }
+
+            _messageContainer = _runtimeGenerator.MessageContainer;
+            _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
+
+            UpdateDisplay();
         }
 
         /// <summary>
@@ -141,8 +174,7 @@ namespace ZIDE.Services.Scripting
         /// </summary>
         public void Parse()
         {
-            RefreshScript();
-            UpdateDisplay();
+            _backgroundWorker.RunWorkerAsync();
         }
 
         /// <summary>
@@ -164,14 +196,6 @@ namespace ZIDE.Services.Scripting
             {
                 _codeScope = null;
             }
-
-            if (ScriptParsed != null)
-            {
-                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
-            }
-
-            _messageContainer = _runtimeGenerator.MessageContainer;
-            _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
         }
 
         /// <summary>
