@@ -8,7 +8,6 @@ using ICSharpCode.TextEditor.Document;
 using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Models;
-using ZIDE.Services;
 using ZIDE.Services.Scripting;
 
 namespace ZIDE.Views.Controls
@@ -16,7 +15,7 @@ namespace ZIDE.Views.Controls
     /// <summary>
     /// Represents a script document container
     /// </summary>
-    public sealed partial class ScriptDocumentForm : DockContent
+    public sealed partial class ScriptDocumentForm : DockContent, IScriptForm
     {
         /// <summary>
         /// The document associated with this scripts document form
@@ -57,70 +56,8 @@ namespace ZIDE.Views.Controls
             Text = document.DocumentName;
             te_textEditor.Text = Document.Contents;
 
-            // Setup the text editor on the document
-            te_textEditor.Document.TextEditorProperties.ConvertTabsToSpaces = true;
-            te_textEditor.Document.TextEditorProperties.ShowSpaces = true;
-            te_textEditor.Document.TextEditorProperties.ShowTabs = true;
-
-            InitializeSyntaxHighlighting();
-
             // Add the realtime syntax check service
             var syntaxService = new RealtimeSyntaxCheckService(this);
-        }
-
-        /// <summary>
-        /// Initializes the syntax highlighting on this form
-        /// </summary>
-        void InitializeSyntaxHighlighting()
-        {
-            HighlightingManager.Manager.AddSyntaxModeFileProvider(new ZScriptSyntaxModeProvider()); // Attach to the text editor
-            te_textEditor.SetHighlighting("ZScript"); // Activate the highlighting, use the name from the SyntaxDefinition node
-        }
-
-        /// <summary>
-        /// Basic syntax mode provider
-        /// </summary>
-        class ZScriptSyntaxModeProvider : ISyntaxModeFileProvider
-        {
-            /// <summary>
-            /// List of syntax modes provided by this ZScriptSyntaxModeProvider
-            /// </summary>
-		    List<SyntaxMode> _syntaxModes;
-
-            /// <summary>
-            /// Gets a collection of syntax modes provided by this ZScriptSyntaxModeProvider
-            /// </summary>
-            public ICollection<SyntaxMode> SyntaxModes
-            {
-                get { return _syntaxModes; }
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the ZScriptSyntaxModeProvider class
-            /// </summary>
-            public ZScriptSyntaxModeProvider()
-		    {
-			    UpdateSyntaxModeList();
-		    }
-		    
-            /// <summary>
-            /// Updates the syntax mode list
-            /// </summary>
-		    public void UpdateSyntaxModeList()
-		    {
-                _syntaxModes = new List<SyntaxMode> { new SyntaxMode("ZScript", "ZScript", ".xshd") };
-		    }
-
-            /// <summary>
-            /// Gets an XML reader for the contents ofthe given syntax mode file
-            /// </summary>
-            /// <param name="syntaxMode">The syntax mode to get</param>
-            /// <returns>An XML reader for the given syntax mode</returns>
-            public XmlTextReader GetSyntaxModeFile(SyntaxMode syntaxMode)
-		    {
-                var bytes = Properties.Resources.ZScript_Mode;
-                return new XmlTextReader(new MemoryStream(bytes));
-		    }
         }
     }
 }

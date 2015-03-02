@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -64,6 +63,16 @@ namespace ZIDE.Views
             _mainController.DocumentEventSource.DocumentClosed += DocumentEventSource_DocumentClosed;
         }
 
+        /// <summary>
+        /// Opens the testbed window
+        /// </summary>
+        private void OpenTestbed()
+        {
+            TestbedDocumentForm testbedForm = new TestbedDocumentForm();
+
+            ShowDockContent(testbedForm);
+        }
+
         #region Interface-related methods
 
         /// <summary>
@@ -111,15 +120,7 @@ namespace ZIDE.Views
         {
             ScriptDocumentForm form = new ScriptDocumentForm(document);
 
-            if (dp_mainPanel.DocumentStyle == DocumentStyle.SystemMdi)
-            {
-                form.MdiParent = this;
-                form.Show();
-            }
-            else
-            {
-                form.Show(dp_mainPanel);
-            }
+            ShowDockContent(form);
 
             // Hookup a closing event
             form.FormClosing += ScriptForm_OnFormClosing;
@@ -127,6 +128,23 @@ namespace ZIDE.Views
             form.LostFocus += ScriptForm_LostFocus;
 
             _openedDocumentForms.Add(form);
+        }
+
+        /// <summary>
+        /// Displays a dock content form on this form
+        /// </summary>
+        /// <param name="dockContent">The dock content to show on this form</param>
+        private void ShowDockContent(DockContent dockContent)
+        {
+            if (dp_mainPanel.DocumentStyle == DocumentStyle.SystemMdi)
+            {
+                dockContent.MdiParent = this;
+                dockContent.Show();
+            }
+            else
+            {
+                dockContent.Show(dp_mainPanel);
+            }
         }
 
         /// <summary>
@@ -189,6 +207,14 @@ namespace ZIDE.Views
         private void tsm_projectWindow_Click(object sender, EventArgs e)
         {
             _projectTreeForm.Show(dp_mainPanel);
+        }
+
+        // 
+        // Testbed main menu button click
+        // 
+        private void tsm_testBed_Click(object sender, EventArgs e)
+        {
+            OpenTestbed();
         }
 
         #endregion

@@ -59,6 +59,7 @@
     <Compile Include="Models\ZScriptProject.cs" />
     <Compile Include="Services\Scripting\RealtimeSyntaxCheckService.cs" />
     <Compile Include="Utils\TextEditorUtils.cs" />
+    <Compile Include="Views\Controls\IScriptForm.cs" />
     <Compile Include="Views\Controls\ProjectTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +71,12 @@
     </Compile>
     <Compile Include="Views\Controls\ScriptDocumentForm.Designer.cs">
       <DependentUpon>ScriptDocumentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\TestbedDocumentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Controls\TestbedDocumentForm.Designer.cs">
+      <DependentUpon>TestbedDocumentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\MainForm.cs">
       <SubType>Form</SubType>
@@ -84,6 +91,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Controls\ScriptDocumentForm.resx">
       <DependentUpon>ScriptDocumentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Controls\TestbedDocumentForm.resx">
+      <DependentUpon>TestbedDocumentForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -155,6 +165,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\process-stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\media-playback-start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\format-indent-more.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\go-next.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using Antlr4.Runtime;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
@@ -23,7 +26,7 @@ namespace ZIDE.Services.Scripting
         /// <summary>
         /// The first to provide syntax checking service to
         /// </summary>
-        private readonly ScriptDocumentForm _form;
+        private readonly IScriptForm _form;
 
         /// <summary>
         /// Gets the document associated with this realtime syntax check service
@@ -59,10 +62,22 @@ namespace ZIDE.Services.Scripting
         private const int ParseInterval = 100;
 
         /// <summary>
+        /// Delegate for the ScriptParsed event
+        /// </summary>
+        /// <param name="sender">The sender for the event</param>
+        /// <param name="eventArgs">The arguments for the event</param>
+        public delegate void ScriptParsedEventHandler(object sender, ScriptParsedEventArgs eventArgs);
+
+        /// <summary>
+        /// Occurs whenever the parsing of a script has finished
+        /// </summary>
+        public event ScriptParsedEventHandler ScriptParsed;
+
+        /// <summary>
         /// Initialzies a new instance of the RealtimeSyntaxCheckService class
         /// </summary>
         /// <param name="form">The form to provide the syntax checking service to</param>
-        public RealtimeSyntaxCheckService(ScriptDocumentForm form)
+        public RealtimeSyntaxCheckService(IScriptForm form)
         {
             _form = form;
 
@@ -77,6 +92,22 @@ namespace ZIDE.Services.Scripting
 
             _messagesMargin = new MessagesMargin(_form.TextEditorControl.ActiveTextAreaControl.TextArea);
             _form.TextEditorControl.ActiveTextAreaControl.TextArea.InsertLeftMargin(0, _messagesMargin);
+
+            InitializeSyntaxHighlighting();
+        }
+
+        /// <summary>
+        /// Initializes the syntax highlighting on this form
+        /// </summary>
+        void InitializeSyntaxHighlighting()
+        {
+            // Setup the text editor on the document
+            _form.TextEditorControl.Document.TextEditorProperties.ConvertTabsToSpaces = true;
+            _form.TextEditorControl.Document.TextEditorProperties.ShowSpaces = true;
+            _form.TextEditorControl.Document.TextEditorProperties.ShowTabs = true;
+
+            HighlightingManager.Manager.AddSyntaxModeFileProvider(new ZScriptSyntaxModeProvider()); // Attach to the text editor
+            _form.TextEditorControl.SetHighlighting("ZScript"); // Activate the highlighting, use the name from the SyntaxDefinition node
         }
 
         // 
@@ -107,6 +138,11 @@ namespace ZIDE.Services.Scripting
             else
             {
                 _codeScope = null;
+            }
+
+            if (ScriptParsed != null)
+            {
+                ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope));
             }
 
             _messageContainer = generator.MessageContainer;
@@ -549,6 +585,80 @@ namespace ZIDE.Services.Scripting
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Basic syntax mode provider
+        /// </summary>
+        class ZScriptSyntaxModeProvider : ISyntaxModeFileProvider
+        {
+            /// <summary>
+            /// List of syntax modes provided by this ZScriptSyntaxModeProvider
+            /// </summary>
+            List<SyntaxMode> _syntaxModes;
+
+            /// <summary>
+            /// Gets a collection of syntax modes provided by this ZScriptSyntaxModeProvider
+            /// </summary>
+            public ICollection<SyntaxMode> SyntaxModes
+            {
+                get { return _syntaxModes; }
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the ZScriptSyntaxModeProvider class
+            /// </summary>
+            public ZScriptSyntaxModeProvider()
+            {
+                UpdateSyntaxModeList();
+            }
+
+            /// <summary>
+            /// Updates the syntax mode list
+            /// </summary>
+            public void UpdateSyntaxModeList()
+            {
+                _syntaxModes = new List<SyntaxMode> { new SyntaxMode("ZScript", "ZScript", ".xshd") };
+            }
+
+            /// <summary>
+            /// Gets an XML reader for the contents ofthe given syntax mode file
+            /// </summary>
+            /// <param name="syntaxMode">The syntax mode to get</param>
+            /// <returns>An XML reader for the given syntax mode</returns>
+            public XmlTextReader GetSyntaxModeFile(SyntaxMode syntaxMode)
+            {
+                var bytes = Properties.Resources.ZScript_Mode;
+                return new XmlTextReader(new MemoryStream(bytes));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Event arguments for a ScriptParsed event
+    /// </summary>
+    public class ScriptParsedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets a value specifying whether the script parsing was successfull
+        /// </summary>
+        public bool Succeeded { get; private set; }
+
+        /// <summary>
+        /// When the script parse is successful, this value describes the collected base scope for the script.
+        /// This value is null, if the parsing was unsuccessful
+        /// </summary>
+        public CodeScope BaseScope { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the ScriptParsedEventArgs class
+        /// </summary>
+        /// <param name="succeeded">Whether the script parsing was successfull</param>
+        /// <param name="baseScope">The base scope for the script parsed</param>
+        public ScriptParsedEventArgs(bool succeeded, CodeScope baseScope)
+        {
+            Succeeded = succeeded;
+            BaseScope = baseScope;
         }
     }
 }
