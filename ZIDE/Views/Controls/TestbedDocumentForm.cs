@@ -40,6 +40,11 @@ namespace ZIDE.Views.Controls
         private CodeScope _currentScope;
 
         /// <summary>
+        /// Whether the current parse is the first parse of the form - used to automatically select the 'main' function, once parsing is over
+        /// </summary>
+        private bool _firstParse = true;
+
+        /// <summary>
         /// Gets the text editor control for this form
         /// </summary>
         public TextEditorControl TextEditorControl
@@ -95,12 +100,6 @@ namespace ZIDE.Views.Controls
             te_textEditor.VerticalScroll.Value = 0;
             te_textEditor.ActiveTextAreaControl.VerticalScroll.Value = 0;
             te_textEditor.ActiveTextAreaControl.VScrollBar.Value = 0;
-
-            if (_currentScope != null)
-            {
-                // Start with the default 'main' function
-                SelectFunction(_currentScope.GetDefinitionByName<FunctionDefinition>("main"));
-            }
         }
 
         /// <summary>
@@ -146,7 +145,7 @@ namespace ZIDE.Views.Controls
         {
             tscb_startingFunction.Items.Clear();
 
-            var functions = codeScope.GetDefinitionsByType<FunctionDefinition>();
+            var functions = codeScope.GetDefinitionsByType<TopLevelFunctionDefinition>();
 
             foreach (var func in functions)
             {
@@ -175,8 +174,21 @@ namespace ZIDE.Views.Controls
 
             var runner = new FunctionRunner(_runtimeGenerator, SelectedFunction);
             runner.Execute(tstb_arguments.Text);
+            var output = "";
 
-            te_output.Text = runner.Output;
+            if (!runner.Successful)
+            {
+                output += "Execution failed!: \r\n";
+            }
+            else
+            {
+                output += "Execution succeeded!: \r\n";
+            }
+
+            output += runner.Output;
+
+            te_output.Document.TextContent = output;
+            te_output.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
         }
 
         #region Interface-related methods
@@ -233,6 +245,13 @@ namespace ZIDE.Views.Controls
         {
             UpdateWithScope(eventArgs.BaseScope);
             _runtimeGenerator = eventArgs.RuntimeGenerator;
+
+            if (_firstParse && _currentScope != null)
+            {
+                _firstParse = false;
+                // Start with the default 'main' function
+                SelectFunction(_currentScope.GetDefinitionByName<FunctionDefinition>("main"));
+            }
         }
 
         // 
@@ -321,8 +340,6 @@ namespace ZIDE.Views.Controls
                     _successful = false;
 
                     Output = e.ToString();
-
-                    throw;
                 }
             }
 
@@ -344,6 +361,14 @@ namespace ZIDE.Views.Controls
                 }
 
                 return null;
+            }
+
+            // 
+            // IRuntimeOwner.RespondsToFunction implementation
+            // 
+            public bool RespondsToFunction(ZExportFunction func)
+            {
+                return func.Name == "print";
             }
 
             // 
