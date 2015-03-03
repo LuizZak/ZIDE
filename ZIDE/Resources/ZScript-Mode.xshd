@@ -60,6 +60,7 @@
 				<Key word =  "super" />
 				<Key word =  "switch" />
 				<Key word =  "this" />
+        <Key word =  "base" />
 				<Key word =  "typeof" />
 				<Key word =  "var" />
 				<Key word =  "while" />
