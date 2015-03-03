@@ -57,7 +57,7 @@ namespace ZIDE.Views.Controls
         /// Initializes a new instance of the TestbedDocumentForm class
         /// </summary>
         /// <param name="document">The document to display the form with</param>
-        public TestbedDocumentForm(ZScriptDocument document)
+        public TestbedDocumentForm(ZTestbedScriptDocument document)
             : base(document)
         {
             InitializeComponent();
@@ -75,7 +75,7 @@ namespace ZIDE.Views.Controls
         /// Initializes a new instance of the TestbedDocumentForm class
         /// </summary>
         public TestbedDocumentForm()
-            : this(new ZScriptDocument("Untitled Testbed"))
+            : this(new ZTestbedScriptDocument("Untitled Testbed"))
         {
 
         }

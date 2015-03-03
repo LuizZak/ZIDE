@@ -60,6 +60,7 @@
     <Compile Include="Controllers\ScriptsController.cs" />
     <Compile Include="Models\ZScriptDocument.cs" />
     <Compile Include="Models\ZScriptProject.cs" />
+    <Compile Include="Models\ZTestbedScriptDocument.cs" />
     <Compile Include="Services\Scripting\RealtimeSyntaxCheckService.cs" />
     <Compile Include="Utils\TextEditorUtils.cs" />
     <Compile Include="Views\Controls\IScriptForm.cs" />
