@@ -33,7 +33,7 @@ namespace ZIDE.Views.Controls
         /// <summary>
         /// The current scope collected with the runtime generator
         /// </summary>
-        private CodeScope _currentScope;
+        private CodeScope _codeScope;
 
         /// <summary>
         /// Whether the current parse is the first parse of the form - used to automatically select the 'main' function, once parsing is over
@@ -106,11 +106,13 @@ namespace ZIDE.Views.Controls
         /// <param name="codeScope">The code scope to update the form with. Providing null will clear the contents of the form</param>
         public void UpdateWithScope(CodeScope codeScope)
         {
-            _currentScope = codeScope;
+            _codeScope = codeScope;
 
             if (codeScope == null)
             {
                 DisableFunctionControls();
+
+                UpdateInterface();
 
                 return;
             }
@@ -197,6 +199,18 @@ namespace ZIDE.Views.Controls
         private void UpdateInterface()
         {
             UpdateArgumentsInterface();
+
+            bool enableExecution = SelectedFunction != null && _codeScope != null && !_runtimeGenerator.MessageContainer.HasErrors;
+            tsb_execute.Enabled = enableExecution;
+
+            if (!enableExecution)
+            {
+                tsb_execute.ToolTipText = tsb_execute.Text = @"There are errors in the script and the script cannot be executed";
+            }
+            else
+            {
+                tsb_execute.ToolTipText = tsb_execute.Text = @"Execute";
+            }
         }
 
         /// <summary>
@@ -241,14 +255,14 @@ namespace ZIDE.Views.Controls
         // 
         private void SyntaxService_OnScriptParsed(object sender, ScriptParsedEventArgs eventArgs)
         {
-            UpdateWithScope(eventArgs.BaseScope);
             _runtimeGenerator = eventArgs.RuntimeGenerator;
+            UpdateWithScope(eventArgs.BaseScope);
 
-            if (_firstParse && _currentScope != null)
+            if (_firstParse && _codeScope != null)
             {
                 _firstParse = false;
                 // Start with the default 'main' function
-                SelectFunction(_currentScope.GetDefinitionByName<FunctionDefinition>("main"));
+                SelectFunction(_codeScope.GetDefinitionByName<FunctionDefinition>("main"));
             }
         }
 
