@@ -77,6 +77,15 @@ namespace ZIDE.Controllers
         }
 
         /// <summary>
+        /// Creates a new document on the program
+        /// </summary>
+        /// <returns>The document that was just created</returns>
+        public ZTestbedScriptDocument CreateNewTestbedDocument()
+        {
+            return _scriptsController.CreateNewTestbedDocument();
+        }
+
+        /// <summary>
         /// Closes a given document from the application
         /// </summary>
         /// <param name="document">The document to close</param>

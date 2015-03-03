@@ -64,13 +64,19 @@ namespace ZIDE.Views
         }
 
         /// <summary>
-        /// Opens the testbed window
+        /// Creates a new script file
         /// </summary>
-        private void OpenTestbed()
+        private void NewScript()
         {
-            TestbedDocumentForm testbedForm = new TestbedDocumentForm();
+            _mainController.CreateNewDocument();
+        }
 
-            ShowDockContent(testbedForm);
+        /// <summary>
+        /// Creates a new testbed file
+        /// </summary>
+        private void NewTestbed()
+        {
+            _mainController.CreateNewTestbedDocument();
         }
 
         #region Interface-related methods
@@ -118,7 +124,17 @@ namespace ZIDE.Views
         /// <param name="document">The document to create the interface for</param>
         void AddDocumentInterface(ZScriptDocument document)
         {
-            ScriptDocumentForm form = new ScriptDocumentForm(document);
+            ScriptDocumentForm form;
+
+            var zTestbedDoc = document as ZTestbedScriptDocument;
+            if (zTestbedDoc != null)
+            {
+                form = new TestbedDocumentForm(zTestbedDoc);
+            }
+            else
+            {
+                form = new ScriptDocumentForm(document);
+            }
 
             ShowDockContent(form);
 
@@ -210,11 +226,19 @@ namespace ZIDE.Views
         }
 
         // 
-        // Testbed main menu button click
+        // New Script main menu button click
         // 
-        private void tsm_testBed_Click(object sender, EventArgs e)
+        private void tsm_newScript_Click(object sender, EventArgs e)
         {
-            OpenTestbed();
+            NewScript();
+        }
+
+        // 
+        // New Testbed main menu button click
+        // 
+        private void tsm_newTestBed_Click(object sender, EventArgs e)
+        {
+            NewTestbed();
         }
 
         #endregion

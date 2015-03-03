@@ -46,6 +46,10 @@
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
+            // te_textEditor
+            // 
+            this.te_textEditor.Size = new System.Drawing.Size(799, 273);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -137,16 +141,6 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Output:";
             // 
-            // te_textEditor
-            // 
-            this.te_textEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.te_textEditor.IsReadOnly = false;
-            this.te_textEditor.Location = new System.Drawing.Point(0, 0);
-            this.te_textEditor.Name = "te_textEditor";
-            this.te_textEditor.Size = new System.Drawing.Size(799, 273);
-            this.te_textEditor.TabIndex = 0;
-            this.te_textEditor.Text = "@print(v...)\r\n\r\nfunc main()\r\n{\r\n    // Main entry point\r\n    \r\n}";
-            // 
             // te_output
             // 
             this.te_output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -169,9 +163,8 @@
             this.ClientSize = new System.Drawing.Size(799, 520);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "TestbedDocumentForm";
-            this.Text = "Testbed";
+            this.Text = "Untitled document";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

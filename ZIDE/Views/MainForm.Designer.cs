@@ -57,7 +57,6 @@
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_projectWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsm_testBed = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_about = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -70,6 +69,8 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsb_assemblyExplorer = new System.Windows.Forms.ToolStripButton();
             this.tsb_analyzeSyntax = new System.Windows.Forms.ToolStripButton();
+            this.tsm_newScript = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_newTestBed = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -157,8 +158,10 @@
             // 
             // tsm_newFile
             // 
+            this.tsm_newFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsm_newScript,
+            this.tsm_newTestBed});
             this.tsm_newFile.Name = "tsm_newFile";
-            this.tsm_newFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.tsm_newFile.Size = new System.Drawing.Size(195, 22);
             this.tsm_newFile.Text = "&New";
             // 
@@ -205,8 +208,7 @@
             // windowsToolStripMenuItem
             // 
             this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsm_projectWindow,
-            this.tsm_testBed});
+            this.tsm_projectWindow});
             this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
             this.windowsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.windowsToolStripMenuItem.Text = "Windows";
@@ -215,17 +217,9 @@
             // 
             this.tsm_projectWindow.Image = global::ZIDE.Properties.Resources.system_file_manager;
             this.tsm_projectWindow.Name = "tsm_projectWindow";
-            this.tsm_projectWindow.Size = new System.Drawing.Size(116, 22);
+            this.tsm_projectWindow.Size = new System.Drawing.Size(152, 22);
             this.tsm_projectWindow.Text = "Projects";
             this.tsm_projectWindow.Click += new System.EventHandler(this.tsm_projectWindow_Click);
-            // 
-            // tsm_testBed
-            // 
-            this.tsm_testBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
-            this.tsm_testBed.Name = "tsm_testBed";
-            this.tsm_testBed.Size = new System.Drawing.Size(116, 22);
-            this.tsm_testBed.Text = "Testbed";
-            this.tsm_testBed.Click += new System.EventHandler(this.tsm_testBed_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -333,6 +327,23 @@
             this.tsb_analyzeSyntax.Size = new System.Drawing.Size(23, 22);
             this.tsb_analyzeSyntax.Text = "toolStripButton1";
             // 
+            // tsm_newScript
+            // 
+            this.tsm_newScript.Image = global::ZIDE.Properties.Resources.document_new1;
+            this.tsm_newScript.Name = "tsm_newScript";
+            this.tsm_newScript.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.tsm_newScript.Size = new System.Drawing.Size(152, 22);
+            this.tsm_newScript.Text = "Script";
+            this.tsm_newScript.Click += new System.EventHandler(this.tsm_newScript_Click);
+            // 
+            // tsm_newTestBed
+            // 
+            this.tsm_newTestBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
+            this.tsm_newTestBed.Name = "tsm_newTestBed";
+            this.tsm_newTestBed.Size = new System.Drawing.Size(152, 22);
+            this.tsm_newTestBed.Text = "Testbed";
+            this.tsm_newTestBed.Click += new System.EventHandler(this.tsm_newTestBed_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -383,6 +394,7 @@
         private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tsm_projectWindow;
         private System.Windows.Forms.ToolStripButton tsb_analyzeSyntax;
-        private System.Windows.Forms.ToolStripMenuItem tsm_testBed;
+        private System.Windows.Forms.ToolStripMenuItem tsm_newScript;
+        private System.Windows.Forms.ToolStripMenuItem tsm_newTestBed;
     }
 }

@@ -13,9 +13,14 @@ namespace ZIDE.Controllers
     public class ScriptsController : IDocumentEventSource
     {
         /// <summary>
-        /// Number used during creation of new untitled documents to guarantee uniqueness
+        /// Number used during creation of new untitled documents to guarantee document name uniqueness
         /// </summary>
         private int _untitledSufixNum;
+
+        /// <summary>
+        /// Number used during creation of new testbed documents to guarantee document name uniqueness
+        /// </summary>
+        private int _untitledTestbedSufixNum;
 
         /// <summary>
         /// The main controller this scripts controller is binded to
@@ -91,8 +96,23 @@ namespace ZIDE.Controllers
         public ZScriptDocument CreateNewDocument()
         {
             var documentName = GetNameForUntitledDocument();
-
             var document = new ZScriptDocument(documentName);
+
+            OpenDocument(document);
+
+            return document;
+        }
+
+        /// <summary>
+        /// Creates and opens a new empty testbed document on this scripts controller
+        /// </summary>
+        /// <returns>The document that was created</returns>
+        public ZTestbedScriptDocument CreateNewTestbedDocument()
+        {
+            const string defaultText = "@print(v...)\r\n\r\nfunc main()\r\n{\r\n    // Main entry point\r\n    \r\n}";
+
+            var documentName = GetNameForUntitledTestbedDocument();
+            var document = new ZTestbedScriptDocument(documentName) { Contents = defaultText };
 
             OpenDocument(document);
 
@@ -162,6 +182,26 @@ namespace ZIDE.Controllers
             }
 
             return prefix + _untitledSufixNum;
+        }
+
+        /// <summary>
+        /// Generates and returns a unique name for an untitled document on this scripts controller
+        /// </summary>
+        /// <returns>A unique name for an untitled document on this ScriptsController</returns>
+        private string GetNameForUntitledTestbedDocument()
+        {
+            // Always increment by one
+            _untitledTestbedSufixNum++;
+
+            const string prefix = "Untitled Testbed ";
+
+            // Iterate until no more collisions occur
+            while (GetDocumentByName(string.Format("{0}{1}", prefix, _untitledTestbedSufixNum)) != null)
+            {
+                _untitledTestbedSufixNum++;
+            }
+
+            return prefix + _untitledTestbedSufixNum;
         }
 
         #region Event handlers
