@@ -16,6 +16,12 @@
         public string Contents { get; set; }
 
         /// <summary>
+        /// Gets or sets the savepath for this ZScriptDocument file.
+        /// May be null, if the file has not been saved to disk yet
+        /// </summary>
+        public string SavePath { get; set; }
+
+        /// <summary>
         /// Creates a new instance of the ZScriptDocument class, with empty contents and an associated name
         /// </summary>
         /// <param name="documentName">The name for the document</param>

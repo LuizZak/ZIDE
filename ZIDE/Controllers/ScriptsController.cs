@@ -135,6 +135,12 @@ namespace ZIDE.Controllers
         /// <param name="document">The document to open</param>
         public void OpenDocument(ZScriptDocument document)
         {
+            // If the current open document is an unsaved, empty document, close it
+            if (_openDocuments.Count == 1 && string.IsNullOrEmpty(_openDocuments[0].Contents) && string.IsNullOrEmpty(_openDocuments[0].SavePath))
+            {
+                CloseDocument(_openDocuments[0]);
+            }
+
             // Add the document to the list of documents
             _openDocuments.Add(document);
 
