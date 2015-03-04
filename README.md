@@ -11,3 +11,4 @@ Depdendencies required to build the project:
 
 * [ICSharpCode.TextEditor](https://github.com/LuizZak/ICSharpCode.TextEditor)
 * [ZScript](https://github.com/LuizZak/ZScript)
+* [DockPanelSuite](https://www.nuget.org/packages/DockPanelSuite/) (embedded as a nuget package on the project)
