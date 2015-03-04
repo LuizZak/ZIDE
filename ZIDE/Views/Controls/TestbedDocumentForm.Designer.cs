@@ -163,6 +163,7 @@
             this.ClientSize = new System.Drawing.Size(799, 520);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
+            this.KeyPreview = true;
             this.Name = "TestbedDocumentForm";
             this.Text = "Untitled document";
             this.toolStrip1.ResumeLayout(false);

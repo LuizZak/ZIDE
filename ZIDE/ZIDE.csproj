@@ -123,6 +123,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\ZScript-Mode.xshd" />
+    <None Include="ZIDE.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

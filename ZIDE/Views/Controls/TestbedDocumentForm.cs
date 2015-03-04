@@ -234,7 +234,7 @@ namespace ZIDE.Views.Controls
             }
             else
             {
-                tsb_execute.ToolTipText = tsb_execute.Text = @"Execute";
+                tsb_execute.ToolTipText = tsb_execute.Text = @"Execute (F5)";
             }
         }
 
@@ -274,6 +274,20 @@ namespace ZIDE.Views.Controls
         #endregion
 
         #region Event handlers
+
+        // 
+        // OnKeyDown override
+        // 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.KeyCode == Keys.F5)
+            {
+                Execute();
+                e.Handled = true;
+            }
+        }
 
         // 
         // Script Parsed event handler
