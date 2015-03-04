@@ -24,6 +24,8 @@ THE SOFTWARE.
 */
 #endregion
 using System;
+using System.Linq;
+using System.Resources;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
@@ -172,7 +174,7 @@ namespace ZIDE.Views.Controls
 
             var functions = codeScope.GetDefinitionsByType<TopLevelFunctionDefinition>();
 
-            foreach (var func in functions)
+            foreach (var func in functions.Where(f => f.CallableTypeDef.RequiredArgumentsCount == 0))
             {
                 tscb_startingFunction.Items.Add(func);
             }
