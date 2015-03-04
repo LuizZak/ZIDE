@@ -1,6 +1,6 @@
 ﻿using System;
 using ICSharpCode.TextEditor;
-
+using ICSharpCode.TextEditor.Document;
 using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Models;
@@ -47,6 +47,15 @@ namespace ZIDE.Views.Controls
         /// <summary>
         /// Initializes a new instance of the ScriptDocumentForm class
         /// </summary>
+        public ScriptDocumentForm()
+            : this(new ZScriptDocument("Untitled document"))
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ScriptDocumentForm class
+        /// </summary>
         /// <param name="document">The document to associate with this scripts document form</param>
         public ScriptDocumentForm(ZScriptDocument document)
         {
@@ -55,18 +64,18 @@ namespace ZIDE.Views.Controls
             _document = document;
 
             te_textEditor.Text = Document.Contents;
+            te_textEditor.Document.DocumentChanged += Document_OnDocumentChanged;
 
             // Add the realtime syntax check service
             syntaxService = new RealtimeSyntaxCheckService(this);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the ScriptDocumentForm class
-        /// </summary>
-        public ScriptDocumentForm()
-            : this(new ZScriptDocument("Untitled document"))
+        // 
+        // Document changed event listener
+        // 
+        private void Document_OnDocumentChanged(object sender, DocumentEventArgs documentEventArgs)
         {
-
+            _document.Contents = documentEventArgs.Document.TextContent;
         }
 
         // 
