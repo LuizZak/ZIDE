@@ -112,6 +112,8 @@ namespace ZIDE.Views.Controls
         // 
         protected override void OnShown(EventArgs e)
         {
+            base.OnShown(e);
+
             var highlightStrategy = te_output.Document.HighlightingStrategy as DefaultHighlightingStrategy;
             if (highlightStrategy != null)
             {
