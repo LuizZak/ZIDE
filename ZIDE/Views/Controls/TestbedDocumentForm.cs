@@ -25,8 +25,8 @@ THE SOFTWARE.
 #endregion
 using System;
 using System.Linq;
-using System.Resources;
 using System.Windows.Forms;
+
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
 
