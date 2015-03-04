@@ -1,7 +1,7 @@
 ZIDE - ZScript IDE
 =======
 
-IDE for the ZScript programming language.
+IDE for the [ZScript programming language](https://github.com/LuizZak/ZScript).
 
 This is a really early project, and things might not be working as expected yet.
 
