@@ -279,7 +279,7 @@ namespace ZIDE.Services.Scripting
                 if (context != null)
                 {
                     locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
-                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
+                    locationEnd = new TextLocation(context.Stop.Column + context.Stop.Text.Length, context.Stop.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
@@ -303,7 +303,7 @@ namespace ZIDE.Services.Scripting
                 if (context != null)
                 {
                     locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
-                    locationEnd = new TextLocation(context.Stop.Column + context.GetText().Length, context.Stop.Line - 1);
+                    locationEnd = new TextLocation(context.Stop.Column + context.Stop.Text.Length, context.Stop.Line - 1);
                 }
 
                 var offsetStart = Document.PositionToOffset(locationStart);
