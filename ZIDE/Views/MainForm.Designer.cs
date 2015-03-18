@@ -49,6 +49,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_newFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_newScript = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_newTestBed = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_open = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_save = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_saveAs = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,8 +71,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsb_assemblyExplorer = new System.Windows.Forms.ToolStripButton();
             this.tsb_analyzeSyntax = new System.Windows.Forms.ToolStripButton();
-            this.tsm_newScript = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsm_newTestBed = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -165,6 +165,23 @@
             this.tsm_newFile.Size = new System.Drawing.Size(195, 22);
             this.tsm_newFile.Text = "&New";
             // 
+            // tsm_newScript
+            // 
+            this.tsm_newScript.Image = global::ZIDE.Properties.Resources.document_new1;
+            this.tsm_newScript.Name = "tsm_newScript";
+            this.tsm_newScript.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.tsm_newScript.Size = new System.Drawing.Size(147, 22);
+            this.tsm_newScript.Text = "Script";
+            this.tsm_newScript.Click += new System.EventHandler(this.tsm_newScript_Click);
+            // 
+            // tsm_newTestBed
+            // 
+            this.tsm_newTestBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
+            this.tsm_newTestBed.Name = "tsm_newTestBed";
+            this.tsm_newTestBed.Size = new System.Drawing.Size(147, 22);
+            this.tsm_newTestBed.Text = "Testbed";
+            this.tsm_newTestBed.Click += new System.EventHandler(this.tsm_newTestBed_Click);
+            // 
             // tsm_open
             // 
             this.tsm_open.Name = "tsm_open";
@@ -217,7 +234,7 @@
             // 
             this.tsm_projectWindow.Image = global::ZIDE.Properties.Resources.system_file_manager;
             this.tsm_projectWindow.Name = "tsm_projectWindow";
-            this.tsm_projectWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsm_projectWindow.Size = new System.Drawing.Size(116, 22);
             this.tsm_projectWindow.Text = "Projects";
             this.tsm_projectWindow.Click += new System.EventHandler(this.tsm_projectWindow_Click);
             // 
@@ -326,23 +343,6 @@
             this.tsb_analyzeSyntax.Name = "tsb_analyzeSyntax";
             this.tsb_analyzeSyntax.Size = new System.Drawing.Size(23, 22);
             this.tsb_analyzeSyntax.Text = "toolStripButton1";
-            // 
-            // tsm_newScript
-            // 
-            this.tsm_newScript.Image = global::ZIDE.Properties.Resources.document_new1;
-            this.tsm_newScript.Name = "tsm_newScript";
-            this.tsm_newScript.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.tsm_newScript.Size = new System.Drawing.Size(152, 22);
-            this.tsm_newScript.Text = "Script";
-            this.tsm_newScript.Click += new System.EventHandler(this.tsm_newScript_Click);
-            // 
-            // tsm_newTestBed
-            // 
-            this.tsm_newTestBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
-            this.tsm_newTestBed.Name = "tsm_newTestBed";
-            this.tsm_newTestBed.Size = new System.Drawing.Size(152, 22);
-            this.tsm_newTestBed.Text = "Testbed";
-            this.tsm_newTestBed.Click += new System.EventHandler(this.tsm_newTestBed_Click);
             // 
             // MainForm
             // 
