@@ -23,8 +23,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion
+
 using System;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 using ICSharpCode.TextEditor;
@@ -47,6 +51,11 @@ namespace ZIDE.Views.Controls
     /// </summary>
     public partial class TestbedDocumentForm : ScriptDocumentForm
     {
+        /// <summary>
+        /// The function runner used to run the function selected
+        /// </summary>
+        private FunctionRunner _runner;
+
         /// <summary>
         /// The currently selected function definition
         /// </summary>
@@ -78,6 +87,14 @@ namespace ZIDE.Views.Controls
                 _selectedFunction = value;
                 UpdateInterface();
             }
+        }
+
+        /// <summary>
+        /// Gets a value specifying whether there is a function runner currently executing in this testbed document form
+        /// </summary>
+        private bool Executing
+        {
+            get { return _runner != null && _runner.Running; }
         }
 
         /// <summary>
@@ -196,16 +213,27 @@ namespace ZIDE.Views.Controls
         /// <summary>
         /// Executes the function selected
         /// </summary>
-        private void Execute()
+        private void StartExecution()
         {
-            if (SelectedFunction == null || _runtimeGenerator == null || _runtimeGenerator.MessageContainer.HasErrors)
+            if (SelectedFunction == null || _runtimeGenerator == null || _runtimeGenerator.MessageContainer.HasErrors || Executing)
                 return;
 
-            var runner = new FunctionRunner(_runtimeGenerator, SelectedFunction);
-            runner.Execute(tstb_arguments.Text);
+            // Redirect the output
+            _runner = new FunctionRunner(_runtimeGenerator, SelectedFunction) { DebugMode = cb_debugTokens.Checked };
+            _runner.RunningFinished += Runner_OnRunningFinished;
+            _runner.Execute(tstb_arguments.Text);
+
+            UpdateInterface();
+        }
+
+        // 
+        // FunctionRunner's event handler
+        // 
+        private void Runner_OnRunningFinished(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        {
             var output = "";
 
-            if (!runner.Successful)
+            if (!_runner.Successful)
             {
                 output += "Execution failed!: \r\n";
             }
@@ -214,10 +242,12 @@ namespace ZIDE.Views.Controls
                 output += "Execution succeeded!: \r\n";
             }
 
-            output += runner.Output;
+            output += _runner.Output;
 
             te_output.Document.TextContent = output;
             te_output.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
+
+            UpdateInterface();
         }
 
         #region Interface-related methods
@@ -227,10 +257,22 @@ namespace ZIDE.Views.Controls
         /// </summary>
         private void UpdateInterface()
         {
+            bool executing = Executing;
+
+            // Update interface usability
+            te_textEditor.Enabled = !executing;
+            cb_debugTokens.Enabled = !executing;
+            tscb_startingFunction.Enabled = !executing;
+            tstb_arguments.Enabled = !executing;
+
             UpdateArgumentsInterface();
 
-            bool enableExecution = SelectedFunction != null && _codeScope != null && !_runtimeGenerator.MessageContainer.HasErrors;
+            bool enableExecution = SelectedFunction != null && _codeScope != null &&
+                                   !_runtimeGenerator.MessageContainer.HasErrors;
             tsb_execute.Enabled = enableExecution;
+
+            tsb_execute.Visible = !executing;
+            tsb_cancel.Visible = executing;
 
             if (!enableExecution)
             {
@@ -288,7 +330,7 @@ namespace ZIDE.Views.Controls
 
             if (e.KeyCode == Keys.F5)
             {
-                Execute();
+                StartExecution();
                 e.Handled = true;
             }
         }
@@ -322,7 +364,15 @@ namespace ZIDE.Views.Controls
         // 
         private void tsb_execute_Click(object sender, EventArgs e)
         {
-            Execute();
+            StartExecution();
+        }
+
+        // 
+        // Cancel toolstrip button click
+        // 
+        private void tsb_cancel_Click(object sender, EventArgs e)
+        {
+            _runner.Cancel();
         }
 
         #endregion
@@ -332,6 +382,11 @@ namespace ZIDE.Views.Controls
         /// </summary>
         class FunctionRunner : IRuntimeOwner
         {
+            /// <summary>
+            /// String builder used to capture the output of the function execution
+            /// </summary>
+            private readonly StringBuilder _stringBuilder = new StringBuilder();
+
             /// <summary>
             /// The runtime generator containing the code scope and function to run
             /// </summary>
@@ -343,22 +398,34 @@ namespace ZIDE.Views.Controls
             private readonly FunctionDefinition _functionDefinition;
 
             /// <summary>
-            /// Whether the function execution was successful
+            /// The worker used to execute the function in the background
             /// </summary>
-            private bool _successful;
+            private readonly BackgroundWorker _worker = new BackgroundWorker();
 
             /// <summary>
             /// Gets a value specifying whether the function execution was successful
             /// </summary>
-            public bool Successful
-            {
-                get { return _successful; }
-            }
+            public bool Successful { get; private set; }
 
             /// <summary>
             /// Gets the output of the function execution
             /// </summary>
             public string Output { get; private set; }
+
+            /// <summary>
+            /// Gets or sets a value specifying whether to build the script in debug mode
+            /// </summary>
+            public bool DebugMode { get; set; }
+
+            /// <summary>
+            /// Gets a value specifying whether the function runner is currently executing
+            /// </summary>
+            public bool Running { get; private set; }
+
+            /// <summary>
+            /// Event fired whenever the running has completed
+            /// </summary>
+            public event RunWorkerCompletedEventHandler RunningFinished;
 
             /// <summary>
             /// Initializes a new instance of the FunctionRunner clas
@@ -369,6 +436,61 @@ namespace ZIDE.Views.Controls
             {
                 _functionDefinition = functionDefinition;
                 _runtimeGenerator = runtimeGenerator;
+
+                _worker.DoWork += worker_DoWork;
+                _worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+                _worker.WorkerSupportsCancellation = true;
+            }
+
+            // 
+            // Runner background worker's do work event
+            // 
+            void worker_DoWork(object sender, DoWorkEventArgs ev)
+            {
+                var lastOut = Console.Out;
+
+                _stringBuilder.Clear();
+                Console.SetOut(new StringWriter(_stringBuilder));
+
+                _runtimeGenerator.Debug = DebugMode;
+
+                try
+                {
+                    var runtime = _runtimeGenerator.GenerateRuntime(this);
+
+                    var ret = runtime.CallFunction(_functionDefinition.Name);
+
+                    if (!string.IsNullOrEmpty(Output))
+                        Output += "\r\n";
+
+                    Output += ret;
+
+                    Successful = true;
+                }
+                catch (Exception e)
+                {
+                    Successful = false;
+
+                    Output = e.ToString();
+                }
+                finally
+                {
+                    Output += _stringBuilder.ToString();
+                    Console.SetOut(lastOut);
+                }
+            }
+
+            // 
+            // Runner background worker's event
+            // 
+            private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+            {
+                Running = false;
+
+                if (RunningFinished != null)
+                {
+                    RunningFinished(this, e);
+                }
             }
 
             /// <summary>
@@ -377,25 +499,20 @@ namespace ZIDE.Views.Controls
             /// <param name="arguments">The arguments to use when executing the function</param>
             public void Execute(string arguments)
             {
-                try
+                if(!_worker.IsBusy)
                 {
-                    var runtime = _runtimeGenerator.GenerateRuntime(this);
+                    Running = true;
 
-                    var ret = runtime.CallFunction(_functionDefinition.Name);
-
-                    if(!string.IsNullOrEmpty(Output))
-                        Output += "\r\n";
-
-                    Output += ret;
-
-                    _successful = true;
+                    _worker.RunWorkerAsync();
                 }
-                catch (Exception e)
-                {
-                    _successful = false;
+            }
 
-                    Output = e.ToString();
-                }
+            /// <summary>
+            /// Cancels the execution of the current script
+            /// </summary>
+            public void Cancel()
+            {
+                _worker.CancelAsync();
             }
 
             // 

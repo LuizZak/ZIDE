@@ -173,6 +173,16 @@ namespace ZIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap emblem_unreadable {
+            get {
+                object obj = ResourceManager.GetObject("emblem-unreadable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap format_indent_more {
             get {
                 object obj = ResourceManager.GetObject("format-indent-more", resourceCulture);

@@ -36,7 +36,9 @@
             this.tstb_arguments = new System.Windows.Forms.ToolStripTextBox();
             this.tsl_rightParam = new System.Windows.Forms.ToolStripLabel();
             this.tsb_execute = new System.Windows.Forms.ToolStripButton();
+            this.tsb_cancel = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cb_debugTokens = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.te_output = new ICSharpCode.TextEditor.TextEditorControl();
             this.toolStrip1.SuspendLayout();
@@ -59,7 +61,8 @@
             this.tsl_leftParam,
             this.tstb_arguments,
             this.tsl_rightParam,
-            this.tsb_execute});
+            this.tsb_execute,
+            this.tsb_cancel});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(799, 25);
@@ -112,6 +115,16 @@
             this.tsb_execute.ToolTipText = "Execute";
             this.tsb_execute.Click += new System.EventHandler(this.tsb_execute_Click);
             // 
+            // tsb_cancel
+            // 
+            this.tsb_cancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsb_cancel.Image = global::ZIDE.Properties.Resources.emblem_unreadable;
+            this.tsb_cancel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsb_cancel.Name = "tsb_cancel";
+            this.tsb_cancel.Size = new System.Drawing.Size(23, 22);
+            this.tsb_cancel.Text = "Cancel";
+            this.tsb_cancel.Click += new System.EventHandler(this.tsb_cancel_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -126,11 +139,22 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.cb_debugTokens);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.te_output);
             this.splitContainer1.Size = new System.Drawing.Size(799, 495);
             this.splitContainer1.SplitterDistance = 273;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // cb_debugTokens
+            // 
+            this.cb_debugTokens.AutoSize = true;
+            this.cb_debugTokens.Location = new System.Drawing.Point(51, 2);
+            this.cb_debugTokens.Name = "cb_debugTokens";
+            this.cb_debugTokens.Size = new System.Drawing.Size(87, 17);
+            this.cb_debugTokens.TabIndex = 4;
+            this.cb_debugTokens.Text = "Debug mode";
+            this.cb_debugTokens.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -191,5 +215,7 @@
         private ICSharpCode.TextEditor.TextEditorControl te_output;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox cb_debugTokens;
+        private System.Windows.Forms.ToolStripButton tsb_cancel;
     }
 }
