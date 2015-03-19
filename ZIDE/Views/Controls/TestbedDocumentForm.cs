@@ -522,10 +522,7 @@ namespace ZIDE.Views.Controls
             {
                 if (func.Name == "print")
                 {
-                    foreach (var p in parameters)
-                    {
-                        Output += p + " ";
-                    }
+                    Output += string.Join(" ", parameters.Select(p => p ?? "null"));
 
                     Output += "\r\n";
 
