@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -458,7 +459,12 @@ namespace ZIDE.Views.Controls
                 {
                     var runtime = _runtimeGenerator.GenerateRuntime(this);
 
+                    var sw = Stopwatch.StartNew();
+
                     var ret = runtime.CallFunction(_functionDefinition.Name);
+
+                    sw.Stop();
+                    Output += "\r\nExecution time: " + ((double)sw.ElapsedTicks / Stopwatch.Frequency * 1000) + "ms";
 
                     if (!string.IsNullOrEmpty(Output))
                         Output += "\r\n";
