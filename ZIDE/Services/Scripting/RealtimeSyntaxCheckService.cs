@@ -388,13 +388,6 @@ namespace ZIDE.Services.Scripting
                 return typeAlias.typeAliasName();
             }
 
-            // Value holder definition
-            var valueHolder = context as ZScriptParser.ValueHolderDeclContext;
-            if (valueHolder != null)
-            {
-                return valueHolder.valueHolderName();
-            }
-
             // Type field
             var typeField = context as ZScriptParser.TypeAliasVariableContext;
             if (typeField != null)
