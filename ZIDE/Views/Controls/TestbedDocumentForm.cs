@@ -524,11 +524,11 @@ namespace ZIDE.Views.Controls
             // 
             // IRuntimeOwner.CallFunction implementation
             // 
-            public object CallFunction(ZExportFunction func, params object[] parameters)
+            public object CallFunction(ZExportFunction func, CallArguments parameters)
             {
                 if (func.Name == "print")
                 {
-                    Output += string.Join(" ", parameters.Select(p => p ?? "null"));
+                    Output += string.Join(" ", parameters.Arguments.Select(p => p ?? "null"));
 
                     Output += "\r\n";
 
@@ -549,7 +549,7 @@ namespace ZIDE.Views.Controls
             // 
             // IRuntimeOwner.CreateType implementation
             // 
-            public object CreateType(string typeName, params object[] parameters)
+            public object CreateType(string typeName, CallArguments parameters)
             {
                 throw new InvalidOperationException("Cannot create types in Testbed scripts");
             }

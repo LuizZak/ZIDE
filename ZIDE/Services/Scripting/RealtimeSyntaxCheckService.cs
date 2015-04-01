@@ -435,7 +435,7 @@ namespace ZIDE.Services.Scripting
                 var context = usage.Context;
 
                 var locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
-                var locationEnd = new TextLocation(context.Stop.Column, context.Start.Line - 1);
+                var locationEnd = new TextLocation(context.Stop.Column + context.Stop.Text.Length, context.Start.Line - 1);
 
                 var offsetStart = Document.PositionToOffset(locationStart);
                 var offsetEnd = Document.PositionToOffset(locationEnd);
