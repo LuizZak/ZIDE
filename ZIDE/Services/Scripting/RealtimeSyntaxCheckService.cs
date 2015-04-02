@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -392,7 +393,7 @@ namespace ZIDE.Services.Scripting
             var typeField = context as ZScriptParser.TypeAliasVariableContext;
             if (typeField != null)
             {
-                return typeField.valueDeclareStatement().valueHolderDecl().valueHolderName();
+                return typeField.valueDeclareStatement().valueHolderDecl().valueHolderDefine().valueHolderName();
             }
 
             return context;
@@ -410,7 +411,7 @@ namespace ZIDE.Services.Scripting
             {
                 string message = definition.Type.ToString();
                 var context = (ZScriptParser.ValueHolderDeclContext)definition.Context;
-                var declContext = context.let ?? context.var;
+                var declContext = context.valueHolderDefine().let ?? context.valueHolderDefine().var;
 
                 var locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
                 var locationEnd = new TextLocation(context.Start.Column + declContext.Text.Length, context.Start.Line - 1);
