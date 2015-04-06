@@ -406,12 +406,12 @@ namespace ZIDE.Services.Scripting
         {
             // Add the definition markers
             var definitions = scope.GetAllDefinitionsRecursive();
-
-            foreach (var definition in definitions.OfType<ValueHolderDefinition>().Where(d => d.Context != null && d.Context is ZScriptParser.ValueHolderDeclContext))
+            
+            foreach (var definition in definitions.OfType<ValueHolderDefinition>().Where(d => d.ValueDefineContext != null && d.Context != null))
             {
                 string message = definition.Type.ToString();
-                var context = (ZScriptParser.ValueHolderDeclContext)definition.Context;
-                var declContext = context.valueHolderDefine().let ?? context.valueHolderDefine().var;
+                var context = definition.ValueDefineContext;
+                var declContext = context.let ?? context.var;
 
                 var locationStart = new TextLocation(context.Start.Column, context.Start.Line - 1);
                 var locationEnd = new TextLocation(context.Start.Column + declContext.Text.Length, context.Start.Line - 1);

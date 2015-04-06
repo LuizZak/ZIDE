@@ -66,6 +66,7 @@
 				<Key word =  "while" />
 				<Key word =  "with" />
         <Key word =  "where" />
+        <Key word =  "in" />
 			</KeyWords>
 	
 			<KeyWords name ="ZHSIntrinsics" bold="false" italic = "false" color = "Blue">

@@ -212,15 +212,21 @@ namespace ZIDE.Views
             var form = GetFormForDocument(document);
 
             // Quit if the document is not present in this interface
-            if (form == null || form.IsClosing)
-                return;
-
-            // Set the form as closing so events aren't fired twice
-            form.IsClosing = true;
-            // Close the form
-            form.Close();
+            if (form != null && !form.IsClosing)
+            {
+                // Set the form as closing so events aren't fired twice
+                form.IsClosing = true;
+                // Close the form
+                form.Close();
+            }
 
             _openedDocumentForms.Remove(form);
+
+            // Always have an empty document opened
+            if (_openedDocumentForms.Count == 0)
+            {
+                _mainController.CreateNewDocument();
+            }
 
             UpdateInterface();
         }
