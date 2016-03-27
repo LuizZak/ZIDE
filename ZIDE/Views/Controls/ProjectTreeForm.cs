@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion
+
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace ZIDE.Views.Controls
