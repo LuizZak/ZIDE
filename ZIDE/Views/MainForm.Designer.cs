@@ -51,6 +51,7 @@
             this.tsm_newFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_newScript = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_newTestBed = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsm_newProject = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_open = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_save = new System.Windows.Forms.ToolStripMenuItem();
             this.tsm_saveAs = new System.Windows.Forms.ToolStripMenuItem();
@@ -160,7 +161,8 @@
             // 
             this.tsm_newFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsm_newScript,
-            this.tsm_newTestBed});
+            this.tsm_newTestBed,
+            this.tsm_newProject});
             this.tsm_newFile.Name = "tsm_newFile";
             this.tsm_newFile.Size = new System.Drawing.Size(195, 22);
             this.tsm_newFile.Text = "&New";
@@ -170,7 +172,7 @@
             this.tsm_newScript.Image = global::ZIDE.Properties.Resources.document_new1;
             this.tsm_newScript.Name = "tsm_newScript";
             this.tsm_newScript.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.tsm_newScript.Size = new System.Drawing.Size(147, 22);
+            this.tsm_newScript.Size = new System.Drawing.Size(152, 22);
             this.tsm_newScript.Text = "Script";
             this.tsm_newScript.Click += new System.EventHandler(this.tsm_newScript_Click);
             // 
@@ -178,9 +180,17 @@
             // 
             this.tsm_newTestBed.Image = global::ZIDE.Properties.Resources.format_indent_more;
             this.tsm_newTestBed.Name = "tsm_newTestBed";
-            this.tsm_newTestBed.Size = new System.Drawing.Size(147, 22);
+            this.tsm_newTestBed.Size = new System.Drawing.Size(152, 22);
             this.tsm_newTestBed.Text = "Testbed";
             this.tsm_newTestBed.Click += new System.EventHandler(this.tsm_newTestBed_Click);
+            // 
+            // tsm_newProject
+            // 
+            this.tsm_newProject.Image = global::ZIDE.Properties.Resources.package_x_generic;
+            this.tsm_newProject.Name = "tsm_newProject";
+            this.tsm_newProject.Size = new System.Drawing.Size(152, 22);
+            this.tsm_newProject.Text = "Project";
+            this.tsm_newProject.Click += new System.EventHandler(this.tsm_newProject_Click);
             // 
             // tsm_open
             // 
@@ -396,5 +406,6 @@
         private System.Windows.Forms.ToolStripButton tsb_analyzeSyntax;
         private System.Windows.Forms.ToolStripMenuItem tsm_newScript;
         private System.Windows.Forms.ToolStripMenuItem tsm_newTestBed;
+        private System.Windows.Forms.ToolStripMenuItem tsm_newProject;
     }
 }

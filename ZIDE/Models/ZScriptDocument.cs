@@ -31,6 +31,11 @@ namespace ZIDE.Models
     public class ZScriptDocument
     {
         /// <summary>
+        /// Gets the default extension for a ZScript file
+        /// </summary>
+        public static string DefaultExtension = "zs";
+
+        /// <summary>
         /// Gets or sets the display name for this ZScript document
         /// </summary>
         public string DocumentName { get; set; }

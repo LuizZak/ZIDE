@@ -24,9 +24,11 @@ THE SOFTWARE.
 */
 #endregion
 using System;
+using System.Windows.Forms;
 using ZIDE.Controllers.Interfaces;
 using ZIDE.Models;
 using ZIDE.Views;
+using ZIDE.Views.ModelViews;
 
 namespace ZIDE.Controllers
 {
@@ -36,19 +38,9 @@ namespace ZIDE.Controllers
     public class MainController
     {
         /// <summary>
-        /// The main form for the application
-        /// </summary>
-        private readonly MainForm _mainForm;
-
-        /// <summary>
         /// The scripts controller binded to this main controller
         /// </summary>
         private readonly ScriptsController _scriptsController;
-
-        /// <summary>
-        /// The projects controller binded to this main controller
-        /// </summary>
-        private readonly ProjectsController _projectsController;
 
         /// <summary>
         /// Event handler fired when the application has started.
@@ -59,26 +51,17 @@ namespace ZIDE.Controllers
         /// <summary>
         /// Gets the main form for the application
         /// </summary>
-        public MainForm MainForm
-        {
-            get { return _mainForm; }
-        }
+        public MainForm MainForm { get; }
 
         /// <summary>
         /// Getsthe document event sources for the application
         /// </summary>
-        public IDocumentEventSource DocumentEventSource
-        {
-            get { return _scriptsController; }
-        }
+        public IDocumentEventSource DocumentEventSource => _scriptsController;
 
         /// <summary>
         /// Gets the projects controller binded to this main controller
         /// </summary>
-        public ProjectsController ProjectsController
-        {
-            get { return _projectsController; }
-        }
+        public ProjectsController ProjectsController { get; }
 
         /// <summary>
         /// Initializes a new instance of the MainController class
@@ -86,10 +69,10 @@ namespace ZIDE.Controllers
         /// <param name="mainForm">The main form to attach this controller to</param>
         public MainController(MainForm mainForm)
         {
-            _mainForm = mainForm;
-
+            MainForm = mainForm;
+            
             _scriptsController = new ScriptsController(this);
-            _projectsController = new ProjectsController(this);
+            ProjectsController = new ProjectsController(this);
         }
 
         /// <summary>
@@ -111,6 +94,22 @@ namespace ZIDE.Controllers
         }
 
         /// <summary>
+        /// Creates a new project on the program - displays an interface for creating the new project ot the user
+        /// </summary>
+        /// <returns>A new project file; or null, if the user canceled or the project could not be created successfully</returns>
+        public ZScriptProject CreateNewProject()
+        {
+            var form = new NewProjectForm(this);
+
+            if (form.ShowDialog(MainForm) != DialogResult.OK)
+                return null;
+
+            var settings = form.Settings;
+
+            return ProjectsController.CreateProject(settings, true);
+        }
+
+        /// <summary>
         /// Closes a given document from the application
         /// </summary>
         /// <param name="document">The document to close</param>
@@ -125,10 +124,7 @@ namespace ZIDE.Controllers
         public void StartApplication()
         {
             // Fire application started event
-            if (OnApplicationStart != null)
-            {
-                OnApplicationStart(this, new EventArgs());
-            }
+            OnApplicationStart?.Invoke(this, new EventArgs());
         }
     }
 }

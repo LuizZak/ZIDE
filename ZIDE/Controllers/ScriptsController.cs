@@ -60,26 +60,13 @@ namespace ZIDE.Controllers
         /// <summary>
         /// The main controller this scripts controller is binded to
         /// </summary>
-        public MainController MainController
-        {
-            get { return _mainController; }
-        }
+        public MainController MainController => _mainController;
 
         /// <summary>
         /// Gets an array of all currently opened script documents
         /// </summary>
-        public ZScriptDocument[] OpenDocuments
-        {
-            get { return _openDocuments.ToArray(); }
-        }
-
-        /// <summary>
-        /// Delegate for a document-related event
-        /// </summary>
-        /// <param name="sender">The object that fired the event</param>
-        /// <param name="eventArgs">The arguments for the event</param>
-        public delegate void DocumentEventHandler(object sender, DocumentEventArgs eventArgs);
-
+        public ZScriptDocument[] OpenDocuments => _openDocuments.ToArray();
+        
         /// <summary>
         /// Event fired whenever a document has been opened by this ScriptsController
         /// </summary>
@@ -134,7 +121,7 @@ namespace ZIDE.Controllers
         /// <returns>The document that was created</returns>
         public ZTestbedScriptDocument CreateNewTestbedDocument()
         {
-            const string defaultText = "@print(v...)\r\n\r\nfunc main()\r\n{\r\n    // Main entry point\r\n    \r\n}";
+            const string defaultText = "@print(v...)\r\n@sqrt(n: float) : float\r\n@sin(n: float) : float\r\n@cos(n: float) : float\r\n@abs(n: float) : float\r\n\r\nfunc main()\r\n{\r\n    // Main entry point\r\n    \r\n}";
 
             var documentName = GetNameForUntitledTestbedDocument();
             var document = new ZTestbedScriptDocument(documentName) { Contents = defaultText };
@@ -189,10 +176,7 @@ namespace ZIDE.Controllers
             _openDocuments.Remove(document);
 
             // Fire event
-            if (DocumentClosed != null)
-            {
-                DocumentClosed(this, new DocumentEventArgs(document));
-            }
+            DocumentClosed?.Invoke(this, new DocumentEventArgs(document));
         }
 
         /// <summary>
@@ -207,7 +191,7 @@ namespace ZIDE.Controllers
             const string prefix = "Untitled ";
 
             // Iterate until no more collisions occur
-            while (GetDocumentByName(string.Format("{0}{1}", prefix, _untitledSufixNum)) != null)
+            while (GetDocumentByName($"{prefix}{_untitledSufixNum}") != null)
             {
                 _untitledSufixNum++;
             }
@@ -227,7 +211,7 @@ namespace ZIDE.Controllers
             const string prefix = "Untitled Testbed ";
 
             // Iterate until no more collisions occur
-            while (GetDocumentByName(string.Format("{0}{1}", prefix, _untitledTestbedSufixNum)) != null)
+            while (GetDocumentByName($"{prefix}{_untitledTestbedSufixNum}") != null)
             {
                 _untitledTestbedSufixNum++;
             }
@@ -246,25 +230,5 @@ namespace ZIDE.Controllers
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// Event arguments for a document-related event
-    /// </summary>
-    public class DocumentEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Gets the document that was opened
-        /// </summary>
-        public ZScriptDocument Document { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the DocumentOpenedEventArgs class
-        /// </summary>
-        /// <param name="document">The document to bind with this event</param>
-        public DocumentEventArgs(ZScriptDocument document)
-        {
-            Document = document;
-        }
     }
 }

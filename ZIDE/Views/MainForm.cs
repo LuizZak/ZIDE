@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 using ZIDE.Controllers;
+using ZIDE.Controllers.Interfaces;
 using ZIDE.Models;
 using ZIDE.Views.Controls;
 
@@ -59,10 +60,7 @@ namespace ZIDE.Views
         /// <summary>
         /// Gets the main controller for the application
         /// </summary>
-        public MainController MainController
-        {
-            get { return _mainController; }
-        }
+        public MainController MainController => _mainController;
 
         /// <summary>
         /// Initializes a new instance of the MainForm class
@@ -102,6 +100,14 @@ namespace ZIDE.Views
         private void NewTestbed()
         {
             _mainController.CreateNewTestbedDocument();
+        }
+
+        /// <summary>
+        /// Creates a new project
+        /// </summary>
+        private void NewProject()
+        {
+            _mainController.CreateNewProject();
         }
 
         #region Interface-related methods
@@ -270,6 +276,14 @@ namespace ZIDE.Views
         private void tsm_newTestBed_Click(object sender, EventArgs e)
         {
             NewTestbed();
+        }
+
+        // 
+        // New Project main menu button click
+        // 
+        private void tsm_newProject_Click(object sender, EventArgs e)
+        {
+            NewProject();
         }
 
         #endregion

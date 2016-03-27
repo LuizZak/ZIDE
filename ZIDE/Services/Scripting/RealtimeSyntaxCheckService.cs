@@ -45,6 +45,7 @@ using ZScript.CodeGeneration;
 using ZScript.CodeGeneration.Analysis;
 using ZScript.CodeGeneration.Definitions;
 using ZScript.CodeGeneration.Messages;
+using ZScript.Parsing.ANTLR;
 
 namespace ZIDE.Services.Scripting
 {
@@ -59,25 +60,14 @@ namespace ZIDE.Services.Scripting
         private readonly IScriptForm _form;
 
         /// <summary>
-        /// The runtime generator for the realtime syntax check service
-        /// </summary>
-        private ZRuntimeGenerator _runtimeGenerator;
-
-        /// <summary>
         /// Gets the document associated with this realtime syntax check service
         /// </summary>
-        private IDocument Document
-        {
-            get { return _form.TextEditorControl.Document; }
-        }
+        private IDocument Document => _form.TextEditorControl.Document;
 
         /// <summary>
         /// Gets the runtime generator for the realtime syntax check service
         /// </summary>
-        public ZRuntimeGenerator RuntimeGenerator
-        {
-            get { return _runtimeGenerator; }
-        }
+        public ZRuntimeGenerator RuntimeGenerator { get; private set; }
 
         /// <summary>
         /// The container for the error messages found during parsing
@@ -186,13 +176,10 @@ namespace ZIDE.Services.Scripting
         {
             lock (Document)
             {
-                if (ScriptParsed != null)
-                {
-                    ScriptParsed(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, _runtimeGenerator));
-                }
+                ScriptParsed?.Invoke(this, new ScriptParsedEventArgs(_codeScope != null, _codeScope, RuntimeGenerator));
 
-                _messageContainer = _runtimeGenerator.MessageContainer;
-                _messagesMargin.MessageContainer = _runtimeGenerator.MessageContainer;
+                _messageContainer = RuntimeGenerator.MessageContainer;
+                _messagesMargin.MessageContainer = RuntimeGenerator.MessageContainer;
 
                 UpdateDisplay();
             }
@@ -216,7 +203,7 @@ namespace ZIDE.Services.Scripting
                 return;
 
             // Parse the script
-            _runtimeGenerator = new ZRuntimeGenerator(Document.TextContent);
+            RuntimeGenerator = new ZRuntimeGenerator(Document.TextContent);
 
             _backgroundWorker.RunWorkerAsync();
         }
@@ -226,12 +213,12 @@ namespace ZIDE.Services.Scripting
         /// </summary>
         void RefreshScript()
         {
-            _runtimeGenerator.ParseSources();
+            RuntimeGenerator.ParseSources();
 
-            if (!_runtimeGenerator.MessageContainer.HasSyntaxErrors)
+            if (!RuntimeGenerator.MessageContainer.HasSyntaxErrors)
             {
                 // TODO: See how to deal with multiple scopes coming from multiple sources merged into one
-                _codeScope = _runtimeGenerator.CollectDefinitions();
+                _codeScope = RuntimeGenerator.CollectDefinitions();
                 //_codeScope = generator.SourceProvider.Sources[0].Definitions.CollectedBaseScope;
             }
             else
@@ -479,10 +466,7 @@ namespace ZIDE.Services.Scripting
             // 
             // AbstractMargin.Size override
             // 
-            public override Size Size
-            {
-                get { return new Size(20, -1); }
-            }
+            public override Size Size => new Size(20, -1);
 
             /// <summary>
             /// Initializes a new instance of the MessagesMargin class
@@ -675,10 +659,7 @@ namespace ZIDE.Services.Scripting
             /// <summary>
             /// Gets a collection of syntax modes provided by this ZScriptSyntaxModeProvider
             /// </summary>
-            public ICollection<SyntaxMode> SyntaxModes
-            {
-                get { return _syntaxModes; }
-            }
+            public ICollection<SyntaxMode> SyntaxModes => _syntaxModes;
 
             /// <summary>
             /// Initializes a new instance of the ZScriptSyntaxModeProvider class

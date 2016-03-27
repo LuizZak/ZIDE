@@ -23,6 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #endregion
+
+using System;
+using ZIDE.Models;
+
 namespace ZIDE.Controllers.Interfaces
 {
     /// <summary>
@@ -33,11 +37,38 @@ namespace ZIDE.Controllers.Interfaces
         /// <summary>
         /// Event fired whenever a document has been opened by this IDocumentEventSource
         /// </summary>
-        event ScriptsController.DocumentEventHandler DocumentOpened;
+        event DocumentEventHandler DocumentOpened;
 
         /// <summary>
         /// Event fired whenever a document has been closed by this IDocumentEventSource
         /// </summary>
-        event ScriptsController.DocumentEventHandler DocumentClosed;
+        event DocumentEventHandler DocumentClosed;
+    }
+
+    /// <summary>
+    /// Delegate for a document-related event
+    /// </summary>
+    /// <param name="sender">The object that fired the event</param>
+    /// <param name="eventArgs">The arguments for the event</param>
+    public delegate void DocumentEventHandler(object sender, DocumentEventArgs eventArgs);
+
+    /// <summary>
+    /// Event arguments for a document-related event
+    /// </summary>
+    public class DocumentEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets the document that was opened
+        /// </summary>
+        public ZScriptDocument Document { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the DocumentOpenedEventArgs class
+        /// </summary>
+        /// <param name="document">The document to bind with this event</param>
+        public DocumentEventArgs(ZScriptDocument document)
+        {
+            Document = document;
+        }
     }
 }

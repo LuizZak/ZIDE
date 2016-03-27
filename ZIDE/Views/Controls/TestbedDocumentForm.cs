@@ -25,10 +25,12 @@ THE SOFTWARE.
 #endregion
 
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -528,14 +530,75 @@ namespace ZIDE.Views.Controls
             {
                 if (func.Name == "print")
                 {
-                    Output += string.Join(" ", parameters.Arguments.Select(p => p ?? "null"));
+                    Output += string.Join(" ", parameters.Arguments.Select(FormatArgument));
 
                     Output += "\r\n";
 
                     return parameters;
                 }
 
+                if (func.Arguments.Length == 1 && func.Arguments[0].Type == typeof(double) && func.ReturnType == typeof(double))
+                {
+                    switch (func.Name)
+                    {
+                        case "sqrt":
+                            return Math.Sqrt((double)parameters.Arguments[0]);
+                        case "cos":
+                            return Math.Cos((double)parameters.Arguments[0]);
+                        case "sin":
+                            return Math.Sin((double)parameters.Arguments[0]);
+                        case "abs":
+                            return Math.Abs((double)parameters.Arguments[0]);
+                    }
+                }
+
                 return null;
+            }
+
+            private string FormatArgument(object input)
+            {
+                if (input == null)
+                    return "null";
+
+                var builder = new StringBuilder();
+
+                if (input is ITuple)
+                {
+                    builder.Append("(");
+
+                    int fieldIndex = 0;
+                    FieldInfo field;
+                    var type = input.GetType();
+                    while ((field = type.GetField("Field" + fieldIndex)) != null)
+                    {
+                        if (fieldIndex > 0)
+                            builder.Append(", ");
+
+                        builder.Append(FormatArgument(field.GetValue(input)));
+
+                        fieldIndex++;
+                    }
+
+                    builder.Append(")");
+                }
+                else if (input is IList)
+                {
+                    builder.Append("[");
+                    for (int i = 0; i < ((IList)input).Count; i++)
+                    {
+                        if(i > 0)
+                            builder.Append(", ");
+
+                        builder.Append(FormatArgument(((IList)input)[i]));
+                    }
+                    builder.Append("]");
+                }
+                else
+                {
+                    builder.Append(input);
+                }
+
+                return builder.ToString();
             }
 
             // 
@@ -543,7 +606,18 @@ namespace ZIDE.Views.Controls
             // 
             public bool RespondsToFunction(ZExportFunction func)
             {
-                return func.Name == "print";
+                if (func.Name == "print")
+                    return true;
+
+                if (func.Arguments.Length == 1 && func.Arguments[0].Type == typeof(double) &&
+                    func.ReturnType == typeof(double))
+                {
+                    if (func.Name == "sqrt" || func.Name == "cos" || func.Name == "sin" || func.Name == "abs")
+                        return true;
+                }
+
+                return false;
+                //return func.Name == "print" || func.Name == "sqrt" || func.Name == "cos" || func.Name == "sin" || func.Name == "abs";
             }
 
             // 

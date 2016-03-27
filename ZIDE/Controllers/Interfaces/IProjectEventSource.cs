@@ -24,52 +24,56 @@ THE SOFTWARE.
 */
 #endregion
 
-using System.Collections.Generic;
+using System;
+using ZIDE.Models;
 
-namespace ZIDE.Models
+namespace ZIDE.Controllers.Interfaces
 {
     /// <summary>
-    /// Repreents a ZScript module project
+    /// Interface to be implemented by classes that dispatch events related to project management
     /// </summary>
-    public class ZScriptProject
+    public interface IProjectEventSource
     {
         /// <summary>
-        /// Gets the default extension for a ZScriptProject file
+        /// Event fired whenever a project has been opened by this IProjectEventSource
         /// </summary>
-        public static string DefaultExtension = "zsp";
+        event ProjectEventHandler ProjectOpened;
 
         /// <summary>
-        /// Gets the display name of this project
+        /// Event fired whenever a project has been closed by this IProjectEventSource
         /// </summary>
-        public string Name { get; private set; }
+        event ProjectEventHandler ProjectClosed;
 
         /// <summary>
-        /// Gets the path for the project settings file for this project
+        /// Event fired whenever a project has been created by this IProjectEventSource
         /// </summary>
-        public string ProjectFilePath { get; private set; }
+        event ProjectEventHandler ProjectCreated;
+    }
+
+    /// <summary>
+    /// Delegate for a project-related event
+    /// </summary>
+    /// <param name="sender">The object that fired the event</param>
+    /// <param name="eventArgs">The arguments for the event</param>
+    public delegate void ProjectEventHandler(object sender, ProjectEventArgs eventArgs);
+
+    /// <summary>
+    /// Event arguments for a project-related event
+    /// </summary>
+    public class ProjectEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets the document that was opened
+        /// </summary>
+        public ZScriptProject Project { get; private set; }
 
         /// <summary>
-        /// Gets the project path for this ZScriptProject
+        /// Initializes a new instance of the ProjectEventArgs class
         /// </summary>
-        public string BasePath { get; private set; }
-
-        /// <summary>
-        /// Gets the list of documents for this project
-        /// </summary>
-        public IList<ZScriptDocument> DocumentList { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the ZScriptProject class
-        /// </summary>
-        /// <param name="basePath">The base path for the project files</param>
-        /// <param name="name">The name of this project</param>
-        /// <param name="projectFilePath">The project file path for this project</param>
-        public ZScriptProject(string basePath, string name, string projectFilePath)
+        /// <param name="project">The project to bind with this event</param>
+        public ProjectEventArgs(ZScriptProject project)
         {
-            BasePath = basePath;
-            Name = name;
-            ProjectFilePath = projectFilePath;
-            DocumentList = new List<ZScriptDocument>();
+            Project = project;
         }
     }
 }
